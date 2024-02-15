@@ -1,40 +1,52 @@
 <html>
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>
-        <%= title %>
-    </title>
+    <title>Signup - RentEase</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
 </head>
-
 <body>
     <div class="vh-100 d-flex justify-content-center align-items-center flex-column">
-        <form method="POST" action="/signup">
+        <form id="signup-form" method="POST" action="/signup">
             <h1 class="text-center mb-3">Signup to RentEase</h1>
             <div class="form-floating mb-3">
-                <input type="email" class="form-control" name="emailInput" placeholder="name@example.com">
+                <input type="email" class="form-control" id="emailInput" name="email" required>
                 <label for="emailInput">Email</label>
+
+                <% if (typeof(resData) !== 'undefined' && typeof(resData['emailInvalid']) !== 'undefined') { %>
+                    <p class="text-danger"><%= resData['emailInvalid'] %></p>
+                <% } %>
+
             </div>
             <div class="form-floating mb-3">
-                <input type="password" class="form-control" name="passwordInput" placeholder="Password">
+                <input type="password" class="form-control" id="passwordInput" name="password" required>
                 <label for="passwordInput">Password</label>
+
+                <% if (typeof(resData) !== 'undefined' && typeof(resData['passwordInvalid']) !== 'undefined') { %>
+                    <p class="text-danger"><%= resData['passwordInvalid'] %></p>
+                <% } %>
+
             </div>
-            <div class="text-center mb-3">
-                <div class="form-check form-check-inline">
-                    <input class="form-check-input" id="landlordRadio" type="radio" name="role" value="landlord" checked>
-                    <label class="form-check-label" for="landlordRadio">Landlord</label>
+            <div class="d-flex flex-column mb-3">
+                <div class="d-flex justify-content-between">
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" id="landlordRadio" type="radio" name="role" value="landlord" checked>
+                        <label class="form-check-label" for="landlordRadio">Landlord</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" id="tenantRadio" type="radio" name="role" value="tenant">
+                        <label class="form-check-label" for="tenantRadio">Tenant</label>
+                    </div>
                 </div>
-                <div class="form-check form-check-inline">
-                    <input class="form-check-input" id="tenantRadio" type="radio" name="role" value="tenant">
-                    <label class="form-check-label" for="tenantRadio">Tenant</label>
-                </div>
+
+                <% if (typeof(resData) !== 'undefined' && typeof(resData['roleInvalid']) !== 'undefined') { %>
+                    <p class="text-danger"><%= resData['roleInvalid'] %></p>
+                <% } %>
+                
             </div>
-            <button type="submit" class="btn btn-primary btn-lg w-100">Signup</button>
+            <button type="submit" class="btn btn-primary btn-lg w-100" id="signup-submit">Signup</button>
         </form>
     </div>
 </body>
-
 </html>
