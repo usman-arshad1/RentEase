@@ -34,7 +34,7 @@ router.post('/', async function(req, res, next) {
   }
 
   try {
-    const userQueryResult = await database.execute('SELECT * FROM user WHERE email = ?', [email]);
+    const userQueryResult = await database.start('SELECT * FROM user WHERE email = ?', [email]);
 
     if (userQueryResult.length === 0) {
       resData['emailInvalid'] = `Email ${email} is not registered`;

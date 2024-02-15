@@ -47,7 +47,7 @@ router.post('/', async function (req, res, next) {
   }
 
   try {
-    const selectResult = await database.execute('SELECT email FROM user WHERE email = ?', [email]);
+    const selectResult = await database.start('SELECT email FROM user WHERE email = ?', [email]);
 
     if (selectResult.length !== 0) {
       resData['emailInvalid'] = `Email ${email} has already been registered`;
@@ -55,7 +55,7 @@ router.post('/', async function (req, res, next) {
       return;
     }
 
-    const insertResult = await database.execute('INSERT INTO user (email, `password`, `role`) VALUES (?, ?, ?)',
+    const insertResult = await database.start('INSERT INTO user (email, `password`, `role`) VALUES (?, ?, ?)',
       [email, await hashPassword(password), roles[role]]);
 
     res.redirect('/login?message=success');

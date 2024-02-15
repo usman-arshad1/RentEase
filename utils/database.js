@@ -9,7 +9,7 @@ const database = mysql.createPool({
     port: process.env.PORT_DB,
 });
 
-database.execute = (statement, args) => {
+database.start = (statement, args) => {
     return new Promise((resolve, reject) => {
         database.query(statement, args, (err, result) => {
             if (err) reject(err);
