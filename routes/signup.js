@@ -27,12 +27,12 @@ router.get('/', function (req, res, next) {
 router.post('/', function (req, res, next) {
   const resData = validateInput(req.body);
 
-  if (resData) {
+  if (Object.keys(resData).length > 0) {
     res.status(400).render('signup', { resData });
     return;
   }
-  
-  res.status(304).render('signup');
+
+  res.redirect('/login?message=success');
 });
 
 module.exports = router;
