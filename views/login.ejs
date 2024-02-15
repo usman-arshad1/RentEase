@@ -8,6 +8,29 @@
     <title>Login - RentEase</title>
 </head>
 <body>
-    <h1>Login</h1>
+    <div class="vh-100 d-flex justify-content-center align-items-center flex-column">
+        <form id="login-form" method="POST" action="/login">
+            <h1 class="text-center mb-3">Login to RentEase</h1>
+            <div class="form-floating mb-3">
+                <input type="email" class="form-control" id="emailInput" name="email" required>
+                <label for="emailInput">Email</label>
+
+                <% if (typeof(resData) !== 'undefined' && typeof(resData['emailInvalid']) !== 'undefined') { %>
+                    <p class="text-danger"><%= resData['emailInvalid'] %></p>
+                <% } %>
+
+            </div>
+            <div class="form-floating mb-3">
+                <input type="password" class="form-control" id="passwordInput" name="password" required>
+                <label for="passwordInput">Password</label>
+
+                <% if (typeof(resData) !== 'undefined' && typeof(resData['passwordInvalid']) !== 'undefined') { %>
+                    <p class="text-danger"><%= resData['passwordInvalid'] %></p>
+                <% } %>
+
+            </div>
+            <button type="submit" class="btn btn-primary btn-lg w-100" id="login-submit">Login</button>
+        </form>
+    </div>
 </body>
 </html>
