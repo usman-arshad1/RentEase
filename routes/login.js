@@ -54,7 +54,10 @@ router.post('/', async function(req, res, next) {
       // Set the token in the cookie
       res.cookie('jwt', token, { httpOnly: true });
       // Redirect to the home page
-      res.redirect('/login?message=success');
+      resData['loginSuccess'] = 'Login successful'; // To be removed later once dashboard is implemented
+      res.status(200).render('login', { resData });
+
+      // res.redirect('/login?message=success');
     } else {
       resData['passwordInvalid'] = 'Incorrect password';
       res.status(400).render('login', { resData });
