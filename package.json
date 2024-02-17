@@ -19,7 +19,9 @@
   },
   "description": "https://rentease.azurewebsites.net/",
   "main": "app.js",
-  "devDependencies": {},
+  "devDependencies": {
+    "cypress": "^13.6.4"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC"
