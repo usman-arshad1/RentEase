@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('./partials/head', { title: 'Signup - RentEase' }); %>
+</head>
+<body>
+    <div class="vh-100 d-flex justify-content-center align-items-center flex-column">
+        <form id="signup-form" data-cy="signup-form" method="POST" action="/signup">
+            <h1 class="text-center mb-3">Signup to RentEase</h1>
+            <div class="form-floating mb-3">
+                <input type="email" class="form-control" id="email-input" name="email" data-cy="email-input" required>
+                <label for="email-input">Email</label>
+
+                <% if (typeof(resData) !== 'undefined' && typeof(resData['emailInvalid']) !== 'undefined') { %>
+                    <p class="text-danger" data-cy="email-invalid"><%= resData['emailInvalid'] %></p>
+                <% } %>
+
+            </div>
+            <div class="form-floating mb-3">
+                <input type="password" class="form-control" id="password-input" name="password" data-cy="password-input" required>
+                <label for="password-input">Password</label>
+
+                <% if (typeof(resData) !== 'undefined' && typeof(resData['passwordInvalid']) !== 'undefined') { %>
+                    <p class="text-danger"><%= resData['passwordInvalid'] %></p>
+                <% } %>
+
+            </div>
+            <div class="d-flex flex-column mb-3">
+                <div class="d-flex justify-content-between">
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" id="landlord-radio" type="radio" name="role" value="landlord" checked>
+                        <label class="form-check-label" for="landlord-radio">Landlord</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" id="tenant-radio" type="radio" name="role" value="tenant">
+                        <label class="form-check-label" for="tenant-radio">Tenant</label>
+                    </div>
+                </div>
+
+                <% if (typeof(resData) !== 'undefined' && typeof(resData['roleInvalid']) !== 'undefined') { %>
+                    <p class="text-danger"><%= resData['roleInvalid'] %></p>
+                <% } %>
+                
+            </div>
+            <button type="submit" class="btn btn-primary btn-lg w-100" id="signup-submit">Signup</button>
+        </form>
+    </div>
+</body>
+</html>
