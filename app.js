@@ -12,6 +12,8 @@ var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
 var signupRouter = require("./routes/signup");
 var loginRouter = require("./routes/login");
+var dashboardRouter = require("./routes/dashboard");
+var addPropertyRouter = require("./routes/add_property");
 
 var app = express();
 
@@ -29,10 +31,16 @@ app.use("/", indexRouter);
 app.use("/users", usersRouter);
 app.use("/signup", signupRouter);
 app.use("/login", loginRouter);
+app.use("/dashboard", dashboardRouter);
+app.use("/add_property", addPropertyRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
 	next(createError(404));
+});
+
+app.listen(port, () => {
+	console.log(`Example app listening at http://localhost:${port}`);
 });
 
 // error handler
