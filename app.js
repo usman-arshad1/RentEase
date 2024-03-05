@@ -12,13 +12,17 @@ var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
 var signupRouter = require("./routes/signup");
 var loginRouter = require("./routes/login");
+//Landlord User Route Config
 var announcementLLRouter = require("./routes/announcement_LL");
-var announcementTenantRouter = require("./routes/announcement_tenant");
 var feedbackLLRouter = require("./routes/feedback_LL");
-var feedbackTenantRouter = require("./routes/feedback_tenant");
 var propertyRouter = require("./routes/property");
 var tenantListRouter = require("./routes/tenant_list");
 
+//Tenant User Route Config
+var announcementTenantRouter = require("./routes/announcement_tenant");
+var feedbackTenantRouter = require("./routes/feedback_tenant");
+
+//To Confirm if still required
 var dashboardRouter = require("./routes/dashboard");
 var addPropertyRouter = require("./routes/add_property");
 
