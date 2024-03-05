@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include('./partials/head', { title: 'Invite Remove Tenant - RentEase' }); %>
+</head>
+
+<body>
+    <div class="container py-4">
+
+        <% if (typeof(resData) !== 'undefined' && typeof(resData['success']) !== 'undefined') { %>
+            <% if (resData['success'] === true) { %>
+                <div class="alert alert-success" role="alert">
+                    Successfully sent an email!
+                </div>
+            <% } %>
+        <% } %>
+
+        <div class="p-5 mb-4 bg-body-tertiary rounded-3">
+            <div class="container-fluid py-5 text-center">
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#invite-modal">
+                    Invite Tenant
+                </button>
+                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#remove-modal">
+                    Remove Tenant
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="invite-modal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5">Invite Tenant to a Property</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="invite-form" method="POST" action="/inviteremovetenant">
+                        <div class="form-floating mb-3">
+                            <input type="email" class="form-control" id="email-input" name="email" placeholder="Email" required>
+                            <label for="email-input">Email</label>
+
+                            <% if (typeof(resData) !== 'undefined' && typeof(resData['emailInvalid']) !== 'undefined') { %>
+                                <p class="text-danger"><%= resData['emailInvalid'] %></p>
+                            <% } %>
+
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
