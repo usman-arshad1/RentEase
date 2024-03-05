@@ -11,7 +11,8 @@ router.get('/', function(req, res, next) {
 const userData = {
   first_name: 'John',
   last_name: 'Doe',
-  password: 15, // You should hash the password before storing it
+  password: 'hashedPassword',
+  email: 'test@email.com', // You should hash the password before storing it
   role: 2
   // Other user properties as needed
 };
@@ -29,7 +30,5 @@ async function createUser() {
     await prisma.$disconnect();
   }
 }
-
-createUser();
 
 module.exports = router;
