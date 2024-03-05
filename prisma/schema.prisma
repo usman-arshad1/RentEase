@@ -53,7 +53,7 @@ model user {
   user_id                                 Int          @id @default(autoincrement())
   first_name                              String       @db.VarChar(150)
   last_name                               String       @db.VarChar(150)
-  password                                Int
+  password                                String       @db.VarChar(200)
   property_fk                             Int?
   role                                    Int
   feedback                                feedback[]
