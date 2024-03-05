@@ -54,6 +54,7 @@ model user {
   first_name                              String       @db.VarChar(150)
   last_name                               String       @db.VarChar(150)
   password                                String       @db.VarChar(200)
+  email                                   String       @unique(map: "email") @db.VarChar(150)
   property_fk                             Int?
   role                                    Int
   feedback                                feedback[]
