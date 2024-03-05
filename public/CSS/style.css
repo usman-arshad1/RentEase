@@ -11,3 +11,9 @@
 a {
   color: #00B7FF;
 }
+
+.spacer {
+  height: 90px;
+  width: 100%;
+  background-color: white;
+}
