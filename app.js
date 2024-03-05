@@ -12,6 +12,13 @@ var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
 var signupRouter = require("./routes/signup");
 var loginRouter = require("./routes/login");
+var announcementLLRouter = require("./routes/announcement_LL");
+var announcementTenantRouter = require("./routes/announcement_tenant");
+var feedbackLLRouter = require("./routes/feedback_LL");
+var feedbackTenantRouter = require("./routes/feedback_tenant");
+var propertyRouter = require("./routes/property");
+var tenantListRouter = require("./routes/tenant_list");
+
 var dashboardRouter = require("./routes/dashboard");
 var addPropertyRouter = require("./routes/add_property");
 
@@ -31,6 +38,17 @@ app.use("/", indexRouter);
 app.use("/users", usersRouter);
 app.use("/signup", signupRouter);
 app.use("/login", loginRouter);
+
+// Landlord User Routes
+app.use("/landlord-announcements", announcementLLRouter);
+app.use("/landlord-feedback", feedbackLLRouter);
+app.use("/landlord-properties", propertyRouter);
+app.use("/landlord-tenant-list", tenantListRouter);
+
+//Tenant User Routes
+app.use("/tenant-announcements", announcementTenantRouter);
+app.use("/tenant-feedback", feedbackTenantRouter);
+
 app.use("/dashboard", dashboardRouter);
 app.use("/add_property", addPropertyRouter);
 
@@ -40,7 +58,7 @@ app.use(function (req, res, next) {
 });
 
 app.listen(port, () => {
-	console.log(`Example app listening at http://localhost:${port}`);
+	console.log(`Rent Ease web app listening at http://localhost:${port}`);
 });
 
 // error handler
@@ -52,10 +70,6 @@ app.use(function (err, req, res, next) {
 	// render the error page
 	res.status(err.status || 500);
 	res.render("error");
-});
-
-app.listen(port, () => {
-	console.log("Node application listening on port " + port);
 });
 
 module.exports = app;
