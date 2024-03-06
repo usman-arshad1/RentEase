@@ -9,7 +9,7 @@
         <div class="form-wrapper w-100 mx-auto">
             <form id="signup-form" class="bg-body-tertiary border p-5 rounded-3 mb-3" data-cy="signup-form" method="POST" action="/signup">
                 <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="fname-input" name="fname" placeholder="First Name" maxlength="150" required>
+                    <input type="text" class="form-control" id="fname-input" name="fname" data-cy="fname-input" placeholder="First Name" maxlength="150" required>
                     <label for="fname-input">First Name</label>
     
                     <% if (typeof(resData) !== 'undefined' && typeof(resData['fnameInvalid']) !== 'undefined') { %>
@@ -18,7 +18,7 @@
     
                 </div>
                 <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="lname-input" name="lname" placeholder="Last Name" maxlength="150" required>
+                    <input type="text" class="form-control" id="lname-input" name="lname" data-cy="lname-input" placeholder="Last Name" maxlength="150" required>
                     <label for="lname-input">Last Name</label>
     
                     <% if (typeof(resData) !== 'undefined' && typeof(resData['lnameInvalid']) !== 'undefined') { %>

@@ -11,13 +11,13 @@ function generateJWT(email, role) {
 function validateInput(email, password) {
   const resData = {};
   if (!email) {
-    resData['emailInvalid'] = 'Please enter a valid email';
+    resData['emailInvalid'] = 'Enter a valid email';
   } else if (email.length > 150) {
-    resData['emailInvalid'] = 'Please input an email less than 151 characters';
+    resData['emailInvalid'] = 'Enter an email up to 150 characters';
   }
 
   if (!password) {
-    resData['passwordInvalid'] = 'Please enter a password';
+    resData['passwordInvalid'] = 'Enter a password';
   }
 
   return resData;
