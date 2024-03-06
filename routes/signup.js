@@ -1,21 +1,34 @@
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');
-const database = require('../utils/database');
-const { roles } = require('../utils/enums');
+const PrismaClient = require('@prisma/client');
 
-function validateInput(email, password, role) {
+function validateInput(fname, lname, email, password, role) {
   const resData = {};
+
+  if (!fname) {
+    resData['fnameInvalid'] = 'Please enter a first name';
+  } else if (fname.length > 150) {
+    resData['fnameInvalid'] = 'Please input a first name less than 151 characters';
+  }
+
+  if (!lname) {
+    resData['lnameInvalid'] = 'Please enter a last name';
+  } else if (lname.length > 150) {
+    resData['lnameInvalid'] = 'Please input a last name less than 151 characters';
+  }
 
   if (!email) {
     resData['emailInvalid'] = 'Please enter a valid email';
+  } else if (email.length > 150) {
+    resData['emailInvalid'] = 'Please input an email less than to 151 characters';
   }
 
   if (!password) {
     resData['passwordInvalid'] = 'Please enter a valid password';
   }
 
-  if (!role) {
+  if (!role || (role !== 'landlord' && role !== 'tenant')) {
     resData['roleInvalid'] = 'Please select a valid role';
   }
 
@@ -38,8 +51,8 @@ router.get('/', function (req, res, next) {
 });
 
 router.post('/', async function (req, res, next) {
-  const { email, password, role } = req.body;
-  const resData = validateInput(email, password, role);
+  const { fname, lname, email, password, role } = req.body;
+  const resData = validateInput(fname, lname, email, password, role);
 
   if (Object.keys(resData).length > 0) {
     res.status(400).render('signup', { resData });
@@ -47,16 +60,29 @@ router.post('/', async function (req, res, next) {
   }
 
   try {
-    const selectResult = await database.start('SELECT email FROM user WHERE email = ?', [email]);
+    const prisma = new PrismaClient();
 
-    if (selectResult.length !== 0) {
+    const existingUser = await prisma.user.findUnique({
+      where: {
+        email: email
+      }
+    });
+
+    if (existingUser) {
       resData['emailInvalid'] = `Email ${email} has already been registered`;
       res.status(400).render('signup', { resData });
       return;
     }
 
-    const insertResult = await database.start('INSERT INTO user (email, `password`, `role`) VALUES (?, ?, ?)',
-      [email, await hashPassword(password), roles[role]]);
+    await prisma.user.create({
+      data: {
+        first_name: fname,
+        last_name: lname,
+        email: email,
+        password: await hashPassword(password),
+        role: role === 'landlord' ? 1 : 2
+      }
+    });
 
     res.redirect('/login?message=success');
   } catch (err) {
