@@ -1,13 +1,6 @@
 <%- include("templates/header_LL", { title: 'Tenant List - RentEase' }) %>
 <div class="container">
-    <h1>Invite New Tenant</h1>
-    <div class="spacer">
-        "Invite New Tenant" is a button to add a new tenant user.
-    </div>
-    <h1>List of Tenants</h1>
-    <div class="spacer">
-        List of tenants goes here
-    </div>
+    <h1>Tenant List</h1>
 
     <a class="btn btn-success">Invite New Tenant</a>
     <hr />
@@ -17,7 +10,7 @@
             <table class="table table-hover table-striped">
                 <thead class="table-dark">
                     <tr>
-                        <th>Address</th>
+                        <th>Property</th>
                         <th>Name</th>
                         <th>Email</th>
                         <th></th>
@@ -29,9 +22,11 @@
                         <tr>
                             <td><%= `${tenant.unit} ${tenant.street}, ${tenant.city}, ${tenant.country}` %></td>
                             <td><%= `${tenant.first_name} ${tenant.last_name}` %></td>  
-                            <td><%= tenant.email %></td>              
+                            <td><%= tenant.email %></td>
                             <td>
-                                <a class="btn btn-danger btn-sm">Remove</a>
+                                <form method="GET" action="<%= tenant.action %>">
+                                    <button type="submit" class="btn btn-danger btn-sm">Remove</button>
+                                </form>
                             </td>
                         </tr>
                     <% }) %>
