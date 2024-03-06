@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');
 const { PrismaClient } = require('@prisma/client');
+const prisma = new PrismaClient();
 
 function validateInput(fname, lname, email, password, role) {
   const resData = {};
@@ -60,8 +61,6 @@ router.post('/', async function (req, res, next) {
   }
 
   try {
-    const prisma = new PrismaClient();
-
     const existingUser = await prisma.user.findUnique({
       where: {
         email: email
@@ -87,6 +86,8 @@ router.post('/', async function (req, res, next) {
     res.redirect('/login?message=success');
   } catch(err) {
     console.log(err);
+  } finally {
+    prisma.$disconnect();
   }
 });
 

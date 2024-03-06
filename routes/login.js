@@ -3,6 +3,7 @@ const router = express.Router();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { PrismaClient } = require('@prisma/client');
+const prisma = new PrismaClient();
 
 function generateJWT(email, role) {
   return jwt.sign({ email, role }, process.env.JWT_SECRET, { expiresIn: '1h' });
@@ -43,8 +44,6 @@ router.post('/', async function(req, res, next) {
   }
 
   try {
-    const prisma = new PrismaClient();
-
     const existingUser = await prisma.user.findUnique({
       where: {
         email: email
@@ -72,6 +71,8 @@ router.post('/', async function(req, res, next) {
     }
   } catch (err) {
     console.log(err);
+  } finally {
+    prisma.$disconnect();
   }
 });
 
