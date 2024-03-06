@@ -1,35 +1,35 @@
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');
-const PrismaClient = require('@prisma/client');
+const { PrismaClient } = require('@prisma/client');
 
 function validateInput(fname, lname, email, password, role) {
   const resData = {};
 
   if (!fname) {
-    resData['fnameInvalid'] = 'Please enter a first name';
+    resData['fnameInvalid'] = 'Enter a first name';
   } else if (fname.length > 150) {
-    resData['fnameInvalid'] = 'Please input a first name less than 151 characters';
+    resData['fnameInvalid'] = 'Enter a first name up to 150 characters';
   }
 
   if (!lname) {
     resData['lnameInvalid'] = 'Please enter a last name';
   } else if (lname.length > 150) {
-    resData['lnameInvalid'] = 'Please input a last name less than 151 characters';
+    resData['lnameInvalid'] = 'Enter a last name up to 150 characters';
   }
 
   if (!email) {
-    resData['emailInvalid'] = 'Please enter a valid email';
+    resData['emailInvalid'] = 'Enter a valid email';
   } else if (email.length > 150) {
-    resData['emailInvalid'] = 'Please input an email less than to 151 characters';
+    resData['emailInvalid'] = 'Enter an email up to 150 characters';
   }
 
   if (!password) {
-    resData['passwordInvalid'] = 'Please enter a valid password';
+    resData['passwordInvalid'] = 'Enter a valid password';
   }
 
   if (!role || (role !== 'landlord' && role !== 'tenant')) {
-    resData['roleInvalid'] = 'Please select a valid role';
+    resData['roleInvalid'] = 'Select a valid role';
   }
 
   return resData;
@@ -69,7 +69,7 @@ router.post('/', async function (req, res, next) {
     });
 
     if (existingUser) {
-      resData['emailInvalid'] = `Email ${email} has already been registered`;
+      resData['emailInvalid'] = `Email has already been registered`;
       res.status(400).render('signup', { resData });
       return;
     }
@@ -85,7 +85,7 @@ router.post('/', async function (req, res, next) {
     });
 
     res.redirect('/login?message=success');
-  } catch (err) {
+  } catch(err) {
     console.log(err);
   }
 });

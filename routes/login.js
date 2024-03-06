@@ -1,27 +1,36 @@
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');
-// const database = require('../utils/database');
 const jwt = require('jsonwebtoken');
+const { PrismaClient } = require('@prisma/client');
 
-
-function generateJWT(email) {
-  return jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: '1h' });
+function generateJWT(email, role) {
+  return jwt.sign({ email, role }, process.env.JWT_SECRET, { expiresIn: '1h' });
 }
 
 function validateInput(email, password) {
   const resData = {};
   if (!email) {
-    resData['emailInvalid'] = 'Email is required';
+    resData['emailInvalid'] = 'Please enter a valid email';
+  } else if (email.length > 150) {
+    resData['emailInvalid'] = 'Please input an email less than 151 characters';
   }
+
   if (!password) {
-    resData['passwordInvalid'] = 'Password is required';
+    resData['passwordInvalid'] = 'Please enter a password';
   }
+
   return resData;
 }
 
 router.get('/', function(req, res, next) {
-  res.render('login');
+  const resData = {};
+
+  if (req.url.includes('success')) {
+    resData['signupSuccess'] = 'Successfully created an account!';
+  }
+
+  res.render('login', { resData });
 });
 
 router.post('/', async function(req, res, next) {
@@ -33,42 +42,37 @@ router.post('/', async function(req, res, next) {
     return;
   }
 
-  // try {
-  //   const userQueryResult = await database.start('SELECT * FROM user WHERE email = ?', [email]);
+  try {
+    const prisma = new PrismaClient();
 
-  //   if (userQueryResult.length === 0) {
-  //     resData['emailInvalid'] = `Email ${email} is not registered`;
-  //     res.status(400).render('login', { resData });
-  //     return;
-  //   }
+    const existingUser = await prisma.user.findUnique({
+      where: {
+        email: email
+      }
+    });
 
-    
-  //   const user = userQueryResult[0]; 
-  //   // Compare the password from the request with the hashed password from the database
-  //   const match = await bcrypt.compare(password, user.password);
+    if (!existingUser) {
+      resData['emailInvalid'] = `Email is not registered`;
+      res.status(400).render('login', { resData });
+      return;
+    }
 
-  //   if (match) {
-  //     console.log('Password is correct');
-  //     const existingToken = req.cookies.jwt; // Check if the user already has a token
-  //     const token = existingToken || generateJWT(email); // Use existing token or generate a new one
-  //     // Set the token in the cookie
-  //     res.cookie('jwt', token, { httpOnly: true });
-  //     // Redirect to the home page
-  //     resData['loginSuccess'] = 'Login successful'; // To be removed later once dashboard is implemented
-  //     res.status(200).render('login', { resData });
+    const match = await bcrypt.compare(password, existingUser.password);
 
-  //     // res.redirect('/login?message=success');
-  //   } else {
-  //     resData['passwordInvalid'] = 'Incorrect password';
-  //     res.status(400).render('login', { resData });
-  //     return;
-  //   }
-
-  // } catch (error) {
-  //   console.log(error);
-  //   res.status(500).render('login', { message: 'Internal server error' });
-  // }
-
+    if (match) {
+      const existingToken = req.cookies.jwt;
+      const token = existingToken || generateJWT(existingUser.email, existingUser.role);
+      res.cookie('jwt', token, { httpOnly: true });
+      res.render('index', { title: 'RentEase Test' });
+      return;
+    } else {
+      resData['passwordInvalid'] = 'Incorrect password';
+      res.status(400).render('login', { resData });
+      return;
+    }
+  } catch (err) {
+    console.log(err);
+  }
 });
 
 module.exports = router;

@@ -1,19 +1,4 @@
-*{
-  padding: 0;
-  margin: 0;
+.form-wrapper {
+  max-width: 360px;
 }
 
-/* body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
-} */
-
-a {
-  color: #00B7FF;
-}
-
-.spacer {
-  height: 90px;
-  width: 100%;
-  background-color: white;
-}
