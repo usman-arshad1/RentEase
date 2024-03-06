@@ -23,16 +23,17 @@ model feedback {
 }
 
 model properties {
-  property_id                       Int        @id @default(autoincrement())
+  property_id                       Int             @id @default(autoincrement())
   unit                              Int
-  street                            String     @db.VarChar(150)
-  city                              String     @db.VarChar(150)
-  province_state                    String     @map("province/state") @db.VarChar(45)
-  country                           String     @db.VarChar(20)
+  street                            String          @db.VarChar(150)
+  city                              String          @db.VarChar(150)
+  province_state                    String          @map("province/state") @db.VarChar(45)
+  country                           String          @db.VarChar(20)
   user_id                           Int
+  announcements                     announcements[]
   feedback                          feedback[]
-  user_properties_user_idTouser     user       @relation("properties_user_idTouser", fields: [user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "user_id_fk")
-  user_user_property_fkToproperties user[]     @relation("user_property_fkToproperties")
+  user_properties_user_idTouser     user            @relation("properties_user_idTouser", fields: [user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "user_id_fk")
+  user_user_property_fkToproperties user[]          @relation("user_property_fkToproperties")
 
   @@index([user_id], map: "user_id_fk_idx")
 }
@@ -64,4 +65,13 @@ model user {
 
   @@index([property_fk], map: "property_idx")
   @@index([role], map: "role_fk_idx")
+}
+
+model announcements {
+  announcement_id Int        @id @default(autoincrement())
+  announcement    String     @db.VarChar(1000)
+  property        Int
+  properties      properties @relation(fields: [property], references: [property_id], onDelete: NoAction, onUpdate: NoAction, map: "announcementProperty")
+
+  @@index([property], map: "announcementProperty_idx")
 }
