@@ -5,8 +5,8 @@ const jwt = require('jsonwebtoken');
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
-function generateJWT(email, role) {
-  return jwt.sign({ email, role }, process.env.JWT_SECRET, { expiresIn: '1h' });
+function generateJWT(user_id, email, role) {
+  return jwt.sign({ user_id, email, role }, process.env.JWT_SECRET, { expiresIn: '1h' });
 }
 
 function validateInput(email, password) {
@@ -52,22 +52,18 @@ router.post('/', async function(req, res, next) {
 
     if (!existingUser) {
       resData['emailInvalid'] = `Email is not registered`;
-      res.status(400).render('login', { resData });
-      return;
+      return res.status(400).render('login', { resData });
     }
 
     const match = await bcrypt.compare(password, existingUser.password);
 
     if (match) {
-      const existingToken = req.cookies.jwt;
-      const token = existingToken || generateJWT(existingUser.email, existingUser.role);
+      const token = generateJWT(existingUser.user_id, existingUser.email, existingUser.role);
       res.cookie('jwt', token, { httpOnly: true });
-      res.render('index', { title: 'RentEase Test' });
-      return;
+      return res.render('index', { title: 'RentEase Test' });
     } else {
       resData['passwordInvalid'] = 'Incorrect password';
-      res.status(400).render('login', { resData });
-      return;
+      return res.status(400).render('login', { resData });
     }
   } catch (err) {
     console.log(err);

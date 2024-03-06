@@ -2,3 +2,9 @@
   max-width: 360px;
 }
 
+.spacer {
+  height: 90px;
+  width: 100%;
+  background-color: white;
+}
+

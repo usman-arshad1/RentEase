@@ -83,7 +83,7 @@ router.post('/', async function (req, res, next) {
       }
     });
 
-    res.redirect('/login?message=success');
+    return res.redirect('/login?message=success');
   } catch(err) {
     console.log(err);
   } finally {
