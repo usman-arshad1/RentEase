@@ -7,9 +7,40 @@
     
     <h1>New Announcement</h1>
     <div class="spacer">
-        "New Announcement" is a button to create a new announcement.
+        <button onclick="toggleDropdown()">New Announcement</button>
+        <div id="dropdown" class="dropdown-content">
+            <!-- Dropdown content will be populated dynamically -->
+        </div>
     </div>
 </div>
+<script>
+    function toggleDropdown() {
+        var dropdown = document.getElementById("dropdown");
+        if (dropdown.style.display === "block") {
+            dropdown.style.display = "none";
+        } else {
+            dropdown.style.display = "block";
+            populateDropdown();
+        }
+    }
+    
+    function populateDropdown() {
+        // Assuming properties is an array of property names
+        var properties = ["Property 1", "Property 2", "Property 3"];
+    
+        var dropdownContent = document.getElementById("dropdown");
+        dropdownContent.innerHTML = ""; // Clear existing content
+    
+        properties.forEach(function(property) {
+            var option = document.createElement("div");
+            option.textContent = property;
+            option.classList.add("dropdown-item");
+            dropdownContent.appendChild(option);
+        });
+    }
+</script>
+    
+
 
 
 <%- include("templates/footer") %>

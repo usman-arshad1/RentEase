@@ -65,3 +65,13 @@ model user {
   @@index([property_fk], map: "property_idx")
   @@index([role], map: "role_fk_idx")
 }
+
+model announcement {
+  announcement_id       Int        @id @default(autoincrement())
+  title                 String
+  content               String
+  property_id           Int
+  property              properties @relation(fields: [property_id], references: [property_id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([property_id], map: "property_id_idx")
+}
