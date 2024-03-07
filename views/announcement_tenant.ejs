@@ -1,10 +1,36 @@
 <%- include("templates/header_tenant") %>
+
+<br>
+<br>
 <div class="container">
+    <br>
     <h1>Announcements</h1>
     <div class="spacer">
-        List of announcements from landlord goes here
+        <ul class="list-group">
+            <% properties.forEach(property => { %>
+                <li class="list-group-item">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span><%= `${property.unit} ${property.street}, ${property.city}` %></span>
+                        <% if (property.announcements && property.announcements.length > 0) { %>
+                            <span class="badge badge-primary badge-pill"><%= property.announcements.length %></span>
+                        <% } %>
+                    </div>
+                    <% if (property.announcements && property.announcements.length > 0) { %>
+                        <ul class="list-group mt-2">
+                            <% property.announcements.forEach(announcement => { %>
+                                <li class="list-group-item">
+                                    <strong><%= announcement.announcement %></strong>
+                                </li>
+                            <% }); %>
+                        </ul>
+                    <% } else { %>
+                        <p>No announcements for this property.</p>
+                    <% } %>
+                </li>
+            <% }); %>
+        </ul>
     </div> 
+    <br>
 </div>
-
 
 <%- include("templates/footer") %>

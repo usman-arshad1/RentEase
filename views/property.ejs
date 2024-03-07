@@ -8,10 +8,10 @@
     <a href="/add_property">
         <button>Add Property</button>
     </a>
-    <%/* Current user's property list table*/%>
     <table>
         <thead>
         <tr>
+            <th>Unit</th>
             <th>Street</th>
             <th>City</th>
             <th>Province/State</th>
@@ -21,6 +21,7 @@
         <tbody>
         <% for(let property of properties) { %>
             <tr>
+                <td><%= property.unit%></td>
                 <td><%= property.street %></td>
                 <td><%= property.city %></td>
                 <td><%= property.province_state %></td>
