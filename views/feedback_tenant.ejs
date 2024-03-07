@@ -1,8 +1,8 @@
 <%- include("templates/header_tenant") %>
 <div class="container-lg">
-    <div class="text-centre">
+    <div class="text-center">
         <h2>Submit Feedback</h2>
-        <p class="lead">Do you have any building defects to report? For example, structural, safety, or cosmetic issues.</p>
+        <p class="lead">Do you have any building defects to report? <br> For example, structural, safety, or cosmetic issues.</p>
     </div>
     <div class="row justify-content-center my-5">
         <div class="col-lg-6">
@@ -27,16 +27,25 @@
                     <label for="description">Description:</label>
                 </div>
 
-                <div class="form-floating mb-4 mt-4">
-
-
+                <!-- NEED TO ADD FUNCTIONALITY FOR IMAGE UPLOADS -->
+                <div class="file-button">
+                    <label>
+                        <input class="file-input" type="file" name="image"/>
+                    </label>
                 </div>
-                <label for="photo">Upload a Photo</label>
+                <div>
+                    <button type="submit" class="btn btn-secondary mt-2 mb-2">Upload
+                        <span><i class="fas fa-image"></i></span>
+                    </button>
+                </div>
+
+                <div class="mb-4 text-center">
+                    <button type="submit" class="btn btn-secondary">Submit</button>
+                </div>
 
                 
                 
 
-                <button>submit</button>
             </form>
         </div>
 
