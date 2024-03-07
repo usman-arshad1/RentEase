@@ -9,13 +9,15 @@ router.get('/', function(req, res, next) {
 
 // Create a new property
 router.post('/', async (req, res) => {
-  let newProperty; // Declare newProperty outside try-catch block for broader scope
+  let newProperty;
   try {
     // Get data from body
     // The 'user_id' field should not be filled in by the user.
     // Instead, it should be set on the server-side after verifying the user's identity.
     // For now, user id is set to 5 which is "landlord test".
-    const {unit, street, city, province_state, country} = req.body;
+    let unitString = req.body.unit;
+    let unit = parseInt(unitString);
+    const { street, city, province_state, country} = req.body;
 
     // Create a new property
     newProperty = await prisma.properties.create({
@@ -28,13 +30,13 @@ router.post('/', async (req, res) => {
         user_id: 5
       },
     });
+
   } catch (error) {
     console.error(error);
     return res.status(500).send("An error occurred while creating the property");
   }
 
-  // Send response
-  return res.json(newProperty);
+  return res.redirect('/landlord-properties')
 });
 
 module.exports = router;
