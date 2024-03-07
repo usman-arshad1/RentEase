@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <%- include('./templates/head_unregistered', { title: 'Invitation - RentEase' }); %>
+    </head>
+  <body>
+    <% if (typeof(resData) !== 'undefined' && typeof(resData['inviteSuccess']) !== 'undefined') { %>
+        <div class="container">
+            <div class="alert alert-success" role="alert">
+                <%= resData['inviteSuccess'] %>
+            </div>
+        </div>
+    <% } %>
+  </body>
+</html>

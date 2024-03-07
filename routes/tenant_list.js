@@ -5,6 +5,10 @@ const nodemailer = require('nodemailer');
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
+function generateJWT(property_id, tenant_id) {
+	return jwt.sign({ property_id, tenant_id }, process.env.JWT_SECRET, { expiresIn: '12h' });
+  }
+
 function validateInput(email) {
 	const resData = {};
 
@@ -15,7 +19,7 @@ function validateInput(email) {
 	return resData;
 }
 
-function sendEmail(email) {
+function sendEmail(email, tenant_id, property) {
 	let returnValue = 0;
 
 	const transporter = nodemailer.createTransport({
@@ -26,11 +30,13 @@ function sendEmail(email) {
 		}
 	});
 
+	const token = generateJWT(property.property_id, tenant_id);
+
 	const mailOptions = {
 		from: process.env.EMAIL_USER,
 		to: email,
-		subject: 'Yoo',
-		text: 'Yoooooooo'
+		subject: 'Invite to Property',
+		text: `Invite to ${property.unit} ${property.street}, ${property.city}, ${property.country}: http://localhost:8080/invitation?token=${token}`
 	};
 
 	transporter.sendMail(mailOptions, function (error, info) {
@@ -174,16 +180,57 @@ router.get("/remove/:user_id", async function (req, res, next) {
 });
 
 router.post('/', async function (req, res, next) {
-	const { email } = req.body;
+	const { email, property } = req.body;
 	const resData = validateInput(email);
+	const existingToken = req.cookies.jwt;
+	const propertyId = parseInt(property, 10);
+
+	if (!existingToken) {
+		return res.redirect('/login');
+	}
+
+	jwt.verify(existingToken, process.env.JWT_SECRET, async (err, decoded) => {
+		if (err) {
+			if (err.name === 'TokenExpiredError') {
+				return res.redirect('/login');
+			}
+		} else {
+			try {
+				if (decoded.role === 2) {
+					return res.redirect('/');
+				}
+
+				const user = await prisma.user.findUnique({
+					where: {
+						email: email,
+						role: 2
+					}
+				});
+
+				if (!user) {
+					return res.redirect('/landlord-tenant-list');
+				}
+
+				const selectedProperty = await prisma.properties.findUnique({
+					where: {
+						property_id: propertyId
+					}
+				}); 
+
+				if (sendEmail(email, user.user_id, selectedProperty) === 0) {
+					return res.redirect('/landlord-tenant-list');
+				}
+			} catch (err) {
+				console.log(err);
+			} finally {
+				prisma.$disconnect();
+			}
+		}
+	});
 
 	// if (Object.keys(resData).length > 0) {
 	// 	return res.status(400).render('tenant_list', { resData });
 	// }
-
-	if (sendEmail(email) === 0) {
-		return res.redirect('/landlord-tenant-list');
-	}
 });
 
 module.exports = router;
