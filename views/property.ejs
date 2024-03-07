@@ -3,11 +3,32 @@
     <h1>Properties</h1>
     <div class="spacer">
         List of properties for rent goes here
-    </div> 
-    <h1>Add Property</h1>
-    <div class="spacer">
-        "Add Property" is a button to add a new rental property.
     </div>
+    <h1>Add Property</h1>
+    <a href="/add_property">
+        <button>Add Property</button>
+    </a>
+    <%/* Current user's property list table*/%>
+    <table>
+        <thead>
+        <tr>
+            <th>Street</th>
+            <th>City</th>
+            <th>Province/State</th>
+            <th>Country</th>
+        </tr>
+        </thead>
+        <tbody>
+        <% for(let property of properties) { %>
+            <tr>
+                <td><%= property.street %></td>
+                <td><%= property.city %></td>
+                <td><%= property.province_state %></td>
+                <td><%= property.country %></td>
+            </tr>
+        <% } %>
+        </tbody>
+    </table>
 </div>
 
 
