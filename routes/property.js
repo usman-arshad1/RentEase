@@ -1,8 +1,50 @@
-var express = require("express");
-var router = express.Router();
+const express = require("express");
+const router = express.Router();
+const { PrismaClient} = require("@prisma/client");
+const jwt = require("jsonwebtoken");
+const prisma = new PrismaClient();
 
-router.get("/", function (req, res, next) {
-	res.render("property", { title: "Landlord Properties" });
+function verifyLandlord(req, res, next) {
+	const token = req.cookies.jwt;
+	if (!token) {
+		return res.status(401).send("Access Denied / No token provided");
+	}
+
+	try {
+		const decoded = jwt.verify(token, process.env.JWT_SECRET);
+		if (decoded.role !== 1) {
+			return res.status(403).send("Access Denied / Not a landlord");
+		}
+		req.user = decoded;
+		next();
+	} catch (ex) {
+		res.status(400).send("Invalid token");
+	}
+}
+
+router.get("/", verifyLandlord, async function (req, res, next) {
+	try {
+		// Extract the current user's ID from the request
+		const currentUserId = req.user.user_id;
+
+		// Fetch properties associated with the current user
+		const userProperties = await prisma.properties.findMany({
+			where: {
+				user_id: currentUserId
+			}
+		});
+
+		// Render the page with the fetched properties
+		res.render("property", {
+			title: "Landlord Properties",
+			properties: userProperties,
+			userEmail: req.user.email
+		});
+	} catch (error) {
+		console.error(error);
+		res.status(500).send("An error occurred while fetching the properties");
+	}
 });
+
 
 module.exports = router;
