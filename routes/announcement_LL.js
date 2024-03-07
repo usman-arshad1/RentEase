@@ -1,8 +1,6 @@
 var express = require("express");
 var router = express.Router();
 const { PrismaClient } = require('@prisma/client');
-const { parse } = require("ipaddr.js");
-const { get } = require("./announcement_LL");
 const prisma = new PrismaClient();
 
 async function getAnnouncements(req, res) {
