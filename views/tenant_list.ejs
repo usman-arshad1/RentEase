@@ -2,8 +2,10 @@
 <div class="container">
     <h1>Tenant List</h1>
 
-    <a class="btn btn-success">Invite New Tenant</a>
-    <hr />
+    <% if (typeof(resData) !== 'undefined' && typeof(resData['properties']) !== 'undefined' && resData['properties'].length !== 0) { %>
+        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#invite-modal">Invite New Tenant</button>
+        <hr />
+    <% } %>
 
     <% if (typeof(resData) !== 'undefined' && typeof(resData['tenants']) !== 'undefined') { %>
         <div class="table-responsive">
@@ -36,6 +38,42 @@
         </div>
     <% } %>
 
+</div>
+
+<div class="modal fade" id="invite-modal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5">Invite Tenant to a Property</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="invite-form" method="POST" action="/landlord-tenant-list">
+                    <div class="form-floating mb-3">
+                        <input type="email" class="form-control" id="email-input" name="email" placeholder="Email" required>
+                        <label for="email-input">Email</label>
+
+                        <% if (typeof(resData) !== 'undefined' && typeof(resData['emailInvalid']) !== 'undefined') { %>
+                            <p class="text-danger"><%= resData['emailInvalid'] %></p>
+                        <% } %>
+
+                    </div>
+                    <div class="mb-3">
+                        <select class="form-select">
+                            <% for (let i = 0; typeof(resData['properties']) !== 'undefined' && i < resData['properties'].length; i++) { %>
+                                <% if (i === 0) { %>
+                                    <option value="<%= resData['properties'][i].property_id %>" selected><%= `${resData['properties'][i].unit} ${resData['properties'][i].street}, ${resData['properties'][i].city}, ${resData['properties'][i].country}` %></option>
+                                <% } else { %>
+                                    <option value="<%= resData['properties'][i].property_id %>"><%= `${resData['properties'][i].unit} ${resData['properties'][i].street}, ${resData['properties'][i].city}, ${resData['properties'][i].country}` %></option>
+                                <% } %>
+                            <% } %>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
 
 <%- include("templates/footer") %>

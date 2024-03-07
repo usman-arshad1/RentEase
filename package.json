@@ -68,6 +68,7 @@
     "ms": "^2.0.0",
     "mysql2": "^3.9.2",
     "negotiator": "^0.6.3",
+    "nodemailer": "^6.9.11",
     "object-inspect": "^1.13.1",
     "on-finished": "^2.3.0",
     "on-headers": "^1.0.2",
