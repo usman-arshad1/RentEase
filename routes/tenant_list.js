@@ -203,6 +203,7 @@ router.post('/', async function (req, res, next) {
 				const user = await prisma.user.findUnique({
 					where: {
 						email: email,
+						property_fk: null,
 						role: 2
 					}
 				});
