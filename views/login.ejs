@@ -15,9 +15,9 @@
         <h1 class="mb-3">RentEase Login</h1>
 
         <div class="form-wrapper w-100 mx-auto">
-            <form id="login-form" class="bg-body-tertiary border p-5 rounded-3 mb-3" method="POST" action="/login">
+            <form id="login-form" class="bg-body-tertiary border p-5 rounded-3 mb-3" data-cy="login-form" method="POST" action="/login">
                 <div class="form-floating mb-3">
-                    <input type="email" class="form-control" id="email-input" name="email" placeholder="Email" maxlength="150" required>
+                    <input type="email" class="form-control" id="email-input" name="email" data-cy="email-input" placeholder="Email" maxlength="150" required>
                     <label for="email-input">Email</label>
     
                     <% if (typeof(resData) !== 'undefined' && typeof(resData['emailInvalid']) !== 'undefined') { %>
@@ -26,7 +26,7 @@
     
                 </div>
                 <div class="form-floating mb-3">
-                    <input type="password" class="form-control" id="password-input" name="password" placeholder="Password" required>
+                    <input type="password" class="form-control" id="password-input" name="password" data-cy="password-input" placeholder="Password" required>
                     <label for="password-input">Password</label>
     
                     <% if (typeof(resData) !== 'undefined' && typeof(resData['passwordInvalid']) !== 'undefined') { %>
@@ -34,7 +34,7 @@
                     <% } %>
     
                 </div>
-                <button type="submit" class="btn btn-primary btn-lg w-100" id="login-submit">Login</button>
+                <button type="submit" class="btn btn-primary btn-lg w-100" id="login-submit" >Login</button>
             </form>
         </div>
         <p>Don't have an account? <a href="/signup">Signup here</a></p>
