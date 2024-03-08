@@ -97,7 +97,7 @@ async function newFeedback(req, res) {
 router.post("/", async function (req, res, next) {
 	// await newFeedback(req, res);
 	console.log(req.body);
-	res.redirect("/tenant_feedback");
+	res.redirect("/tenant-feedback");
 });
 
 router.get("/", function (req, res, next) {
