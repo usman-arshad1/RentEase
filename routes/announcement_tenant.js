@@ -4,33 +4,6 @@ const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 const jwt = require('jsonwebtoken');
 
-
-// async function getAnnouncements(req, res) {
-// 	const userInfo = req.body;
-// 	getHeaders(req);
-// 	console.log(userInfo);
-// 	const user = await prisma.user.findUnique({
-// 			where: {
-// 					email: "jane.smith@example.com" //decoded.email
-// 			}
-// 	});
-// 	if (!user) {
-// 			return res.status(400).json({ error: 'User not found' });
-// 	}
-
-
-// 	const properties = await prisma.properties.findMany({
-// 			where: {
-// 					property_id: user.property_fk
-// 			},
-// 			include: {
-// 					announcements: true
-// 			}
-// 	});
-
-// 	res.render('announcement_tenant', { properties });
-// }
-
 /**
  * Get the announcements for the tenant
  * @param {*} req  The request object
@@ -51,7 +24,6 @@ async function getAnnouncements(req, res) {
 			if (!decoded) {
 					return res.redirect('/login');
 			}
-
 			const user = await prisma.user.findUnique({
 					where: {
 							user_id: decoded.user_id
@@ -60,7 +32,6 @@ async function getAnnouncements(req, res) {
 			if (!user) {
 					return res.status(400).json({ error: 'User not found' });
 			}
-
 			if (user.property_fk === null) {
 					return res.render('announcement_tenant', { properties: [] });
 			} else {
