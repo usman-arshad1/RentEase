@@ -50,6 +50,7 @@ async function getAnnouncements(req, res) {
 			return res.redirect('/login');
 		}
 	}
+
 }
 
 

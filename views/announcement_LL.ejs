@@ -8,41 +8,44 @@
     <div class="spacer">
         <ul class="list-group">
             <% properties.forEach(property => { %>
-                <li class="list-group-item">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <span><%= `${property.unit} ${property.street}, ${property.city}` %></span>
-                        <% if (property.announcements && property.announcements.length > 0) { %>
-                            <span class="badge badge-primary badge-pill"><%= property.announcements.length %></span>
-                        <% } %>
-                    </div>
+            <li class="list-group-item">
+                <div class="d-flex justify-content-between align-items-center">
+                    <span><%= `${property.unit} ${property.street}, ${property.city}` %></span>
                     <% if (property.announcements && property.announcements.length > 0) { %>
-                        <ul class="list-group mt-2">
-                            <% property.announcements.forEach(announcement => { %>
-                                <li class="list-group-item">
-                                    <strong><%= announcement.announcement %></strong>
-                                    <form method="POST" action="/landlord-announcements" style="display: inline;">
-                                        <input type="hidden" name="announcement_id" value="<%= announcement.announcement_id %>">
-                                        <button type="submit" class="btn btn-danger btn-sm ml-2">Delete</button>
-                                    </form>
-                                </li>
-                            <% }); %>
-                        </ul>
-                    <% } else { %>
-                        <p>No announcements for this property.</p>
+                    <span class="badge badge-primary badge-pill"><%= property.announcements.length %></span>
                     <% } %>
-                </li>
+                </div>
+                <% if (property.announcements && property.announcements.length > 0) { %>
+                <ul class="list-group mt-2">
+                    <% property.announcements.forEach(announcement => { %>
+                    <li class="list-group-item">
+                        <strong><%= announcement.announcement %></strong>
+                        <form method="POST" action="/landlord-announcements" style="display: inline;">
+                            <input type="hidden" name="announcement_id" value="<%= announcement.announcement_id %>">
+                            <button type="submit" class="btn btn-danger btn-sm ml-2">Delete</button>
+                        </form>
+                    </li>
+                    <% }); %>
+                </ul>
+                <% } else { %>
+                <p>No announcements for this property.</p>
+                <% } %>
+            </li>
             <% }); %>
         </ul>
-    </div> 
-    <br>
-    <div class="text-center">
-        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-            New Announcement
-        </button>
+
+        <div class="text-center mt-4">
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+                New Announcement
+            </button>
+        </div>
+        
     </div>
 </div>
 
-<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -54,7 +57,8 @@
                         <label for="propertyDropdown">Select Property:</label>
                         <select id="propertyDropdown" name="property_id" class="form-control">
                             <% properties.forEach(property => { %>
-                                <option value="<%= property.property_id %>"><%= `${property.unit} ${property.street}, ${property.city}` %></option>
+                            <option value="<%= property.property_id %>">
+                                <%= `${property.unit} ${property.street}, ${property.city}` %></option>
                             <% }); %>
                         </select>
                     </div>
