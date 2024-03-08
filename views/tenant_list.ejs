@@ -1,4 +1,7 @@
 <%- include("templates/header_LL") %>
+
+<% let i = 1; %>
+
 <div class="container">
     <h1>Tenant List</h1>
 
@@ -19,7 +22,6 @@
                     </tr>
                 </thead>
                 <tbody>
-
                     <% resData['tenants'].forEach(tenant => { %>
                         <tr>
                             <td><%= `${tenant.unit} ${tenant.street}, ${tenant.city}, ${tenant.country}` %></td>
@@ -27,12 +29,12 @@
                             <td><%= tenant.email %></td>
                             <td>
                                 <form method="GET" action="<%= tenant.action %>">
-                                    <button type="submit" class="btn btn-danger btn-sm">Remove</button>
+                                    <button type="submit" id="<%=i%>.delete" class="btn btn-danger btn-sm">Remove</button>
                                 </form>
                             </td>
                         </tr>
+                        <% i++ %>
                     <% }) %>
-    
                 </tbody>
             </table>
         </div>
@@ -69,7 +71,7 @@
                             <% } %>
                         </select>
                     </div>
-                    <button type="submit" class="btn btn-primary">Submit</button>
+                    <button type="submit" data-cy="submit-button" class="btn btn-primary">Submit</button>
                 </form>
             </div>
         </div>
