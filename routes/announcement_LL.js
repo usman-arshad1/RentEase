@@ -31,17 +31,18 @@ async function getAnnouncements(req, res) {
 			return res.status(400).json({ error: 'User not found' });
 		}
 
-		if (user.property_fk === null) {
+		const properties = await prisma.properties.findMany({
+			where: {
+				user_id: user.user_id
+			},
+			include: {
+				announcements: true
+			}
+		});
+
+		if (properties.length === 0) {
 			return res.render('announcement_LL', { properties: [] });
 		} else {
-			const properties = await prisma.properties.findMany({
-				where: {
-					property_id: user.property_fk
-				},
-				include: {
-					announcements: true
-				}
-			});
 			res.render('announcement_LL', { properties });
 		}
 	} catch (err) {
@@ -49,6 +50,7 @@ async function getAnnouncements(req, res) {
 			return res.redirect('/login');
 		}
 	}
+
 }
 
 
