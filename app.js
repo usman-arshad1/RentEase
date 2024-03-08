@@ -12,7 +12,8 @@ var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
 var signupRouter = require("./routes/signup");
 var loginRouter = require("./routes/login");
-const invitationRouter = require('./routes/invitation');
+const invitationRouter = require("./routes/invitation");
+var signoutRouter = require("./routes/signout");
 //Landlord User Route Config
 var announcementLLRouter = require("./routes/announcement_LL");
 var feedbackLLRouter = require("./routes/feedback_LL");
@@ -22,6 +23,7 @@ var tenantListRouter = require("./routes/tenant_list");
 //Tenant User Route Config
 var announcementTenantRouter = require("./routes/announcement_tenant");
 var feedbackTenantRouter = require("./routes/feedback_tenant");
+var newFeedbackTenantRouter = require("./routes/new_feedback");
 
 //To Confirm if still required
 var dashboardRouter = require("./routes/dashboard");
@@ -44,6 +46,7 @@ app.use("/users", usersRouter);
 app.use("/signup", signupRouter);
 app.use("/login", loginRouter);
 app.use("/invitation", invitationRouter);
+app.use("/signout", signoutRouter);
 
 // Landlord User Routes
 app.use("/landlord-announcements", announcementLLRouter);
@@ -54,6 +57,8 @@ app.use("/landlord-tenant-list", tenantListRouter);
 //Tenant User Routes
 app.use("/tenant-announcements", announcementTenantRouter);
 app.use("/tenant-feedback", feedbackTenantRouter);
+app.use("/new-feedback", newFeedbackTenantRouter);
+// app.use("/submit-feedback", newFeedbackTenantRouter);
 
 app.use("/dashboard", dashboardRouter);
 app.use("/add_property", addPropertyRouter);
