@@ -1,4 +1,4 @@
-describe('announcement', () => {
+describe('invite', () => {
 
     it('delete tenant, invite', () => {
         cy.visit('http://localhost:8080/login');
