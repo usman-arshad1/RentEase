@@ -12,6 +12,7 @@ var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
 var signupRouter = require("./routes/signup");
 var loginRouter = require("./routes/login");
+var signoutRouter = require("./routes/signout");
 //Landlord User Route Config
 var announcementLLRouter = require("./routes/announcement_LL");
 var feedbackLLRouter = require("./routes/feedback_LL");
@@ -43,6 +44,7 @@ app.use("/", indexRouter);
 app.use("/users", usersRouter);
 app.use("/signup", signupRouter);
 app.use("/login", loginRouter);
+app.use("/signout", signoutRouter);
 
 // Landlord User Routes
 app.use("/landlord-announcements", announcementLLRouter);
