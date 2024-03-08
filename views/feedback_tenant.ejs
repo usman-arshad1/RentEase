@@ -6,14 +6,18 @@
             <tr>
                 <th>Property</th>
                 <th>Name</th>
-                <th>Category</th>
                 <th>Title</th>
+                <th>Category</th>
                 <th>Date</th>
                 <th>Status</th>
             </tr>
         </thead>
         <tbody>
-            <tr>
+            <% let i=0 %>
+            <% for (i = 0; i < results.length; i++) { %>
+                <%- include('templates/feedback_tenant_row', {results: results[i], username: username})  %> 
+            <% } %>
+            <!-- <tr>
                 <td>Tiger Nixon</td>
                 <td>System Architect</td>
                 <td>Edinburgh</td>
@@ -468,14 +472,14 @@
                 <td>27</td>
                 <td>2011-01-25</td>
                 <td>$112,000</td>
-            </tr>
+            </tr> -->
         </tbody>
         <tfoot>
             <tr>
                 <th>Property</th>
                 <th>Name</th>
-                <th>Category</th>
                 <th>Title</th>
+                <th>Category</th>
                 <th>Date</th>
                 <th>Status</th>
             </tr>
