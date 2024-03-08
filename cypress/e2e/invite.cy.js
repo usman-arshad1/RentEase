@@ -13,7 +13,7 @@ describe('invite', () => {
         cy.get('[data-bs-target="#invite-modal"]').click({delay: 100});
 
 
-        cy.get('[id="email-input"]').type('joe@bob.com');
+        cy.get('[id="email-input"]').type('joe@bob.com', {delay: 100});
         cy.get('[data-cy="submit-button"]').click()
 
     })
