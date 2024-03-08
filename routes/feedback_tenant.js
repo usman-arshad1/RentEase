@@ -68,13 +68,13 @@ async function getFeedback(req, res) {
 			console.log(feedback);
 		});
 
-		if (decoded.role == 1) {
+		if (decoded.role == 2) {
 			res.render("feedback_tenant", {
 				title: "Tenant Feedback",
 				results: results,
 				username: username,
 			});
-		} else if (decoded.role == 2) {
+		} else if (decoded.role == 1) {
 			return res.redirect("/landlord-feedback");
 		}
 	} catch (err) {
