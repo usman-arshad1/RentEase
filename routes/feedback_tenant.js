@@ -40,34 +40,34 @@ async function getFeedback(req, res) {
 		});
 
 		console.log(feedback);
-
-		if (feedback.feedback_id === null) {
-			return res.render("feedback_tenant", { results: results });
-		}
-
-		const property = await prisma.properties.findMany({
-			where: {
-				property_id: feedback.property_fk,
-			},
-			include: {
-				feedback: true,
-			},
-		});
-
-		// console.log(property);
-
-		property.forEach((unit) => {
-			if (unit.feedback.length > 0) {
-				// console.log(unit);
-				// console.log(unit.feedback);
-				results.push(unit);
+		if (feedback.length > 0) {
+			if (feedback.feedback_id === null) {
+				return res.render("feedback_tenant", { results: results });
 			}
-		});
 
-		results.forEach((feedback) => {
-			console.log(feedback);
-		});
+			const property = await prisma.properties.findMany({
+				where: {
+					property_id: feedback.property_fk,
+				},
+				include: {
+					feedback: true,
+				},
+			});
 
+			// console.log(property);
+
+			property.forEach((unit) => {
+				if (unit.feedback.length > 0) {
+					// console.log(unit);
+					// console.log(unit.feedback);
+					results.push(unit);
+				}
+			});
+
+			results.forEach((feedback) => {
+				console.log(feedback);
+			});
+		}
 		if (decoded.role == 2) {
 			res.render("feedback_tenant", {
 				title: "Tenant Feedback",
