@@ -85,6 +85,8 @@ async function getFeedback(req, res) {
 			console.error(err);
 			return res.status(500).json({ error: "Internal server error" });
 		}
+	} finally {
+		prisma.$disconnect();
 	}
 }
 

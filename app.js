@@ -56,6 +56,7 @@ app.use("/landlord-tenant-list", tenantListRouter);
 app.use("/tenant-announcements", announcementTenantRouter);
 app.use("/tenant-feedback", feedbackTenantRouter);
 app.use("/new-feedback", newFeedbackTenantRouter);
+// app.use("/submit-feedback", newFeedbackTenantRouter);
 
 app.use("/dashboard", dashboardRouter);
 app.use("/add_property", addPropertyRouter);
