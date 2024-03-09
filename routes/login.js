@@ -4,6 +4,8 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
+const getAnnouncements = require("./announcement_tenant");
+const getProperties = require("./property")
 
 function generateJWT(user_id, email, role) {
 	return jwt.sign({ user_id, email, role }, process.env.JWT_SECRET, {
@@ -71,7 +73,13 @@ router.post("/", async function (req, res, next) {
 				sameSite: "none",
 				secure: true,
 			});
-			return res.render("index", { title: "RentEase Test" });
+			if (existingUser.role === 1) {
+				var properties = await getProperties(existingUser.user_id);
+				return res.render("property", { properties });
+			} else {
+				var properties = await getAnnouncements(req, res);
+				return res.render("announcement_tenant", { properties });
+			}
 		} else {
 			resData["passwordInvalid"] = "Incorrect password";
 			return res.status(400).render("login", { resData });
