@@ -77,6 +77,34 @@ async function getFeedback(req, res) {
 							user_id: feedback[j].user_id_fk
 						}
 					});
+					switch(feedback[j].category){
+						case 1:	
+							feedback[j].category = "Structural";
+							break;
+						case 2:	
+							feedback[j].category = "Safety";
+							break;
+						case 3:	
+							feedback[j].category = "Cosmetic";
+							break;
+						case 4:	
+							feedback[j].category = "Applicance";
+							break;
+						case 5:	
+							feedback[j].category = "Other";
+							break;
+					}
+					switch(feedback[j].status){
+						case 1:	
+							feedback[j].status = "Pending";
+							break;
+						case 2:	
+							feedback[j].status = "In-Progress";
+							break;
+						case 3:	
+							feedback[j].status = "Completed";
+							break;
+					}
 					feedback[j].user_id_fk = user.first_name + ", " + user.last_name;
 					feedback[j].property_fk = property[i].unit + " " + property[i].street + ", " + property[i].city;
 					results.push(feedback[j]);

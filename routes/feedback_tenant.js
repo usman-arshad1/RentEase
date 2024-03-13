@@ -55,8 +55,36 @@ async function getFeedback(req, res) {
 					property_id: feedback[i].property_fk,
 				},
 			});
-			feedback[i].property_fk =
-				property.unit + " " + property.street + ", " + property.city;
+			switch(feedback[i].category){
+				case 1:	
+					feedback[i].category = "Structural";
+					break;
+				case 2:	
+					feedback[i].category = "Safety";
+					break;
+				case 3:	
+					feedback[i].category = "Cosmetic";
+					break;
+				case 4:	
+					feedback[i].category = "Applicance";
+					break;
+				case 5:	
+					feedback[i].category = "Other";
+					break;
+			}
+			switch(feedback[i].status){
+				case 1:	
+					feedback[i].status = "Pending";
+					break;
+				case 2:	
+					feedback[i].status = "In-Progress";
+					break;
+				case 3:	
+					feedback[i].status = "Completed";
+					break;
+			}
+
+			feedback[i].property_fk = property.unit + " " + property.street + ", " + property.city;
 			results.push(feedback[i]);
 			console.log("results length: " + results.length);
 			// console.log(defect);
