@@ -39,34 +39,26 @@ async function getFeedback(req, res) {
 			},
 		});
 
-		console.log(feedback);
+		console.log("feedback length " + feedback.length);
 
-		if (feedback.feedback_id === null) {
+		if (feedback.length == 0) {
 			return res.render("feedback_tenant", { results: results });
 		}
 
-		const property = await prisma.properties.findMany({
-			where: {
-				property_id: feedback.property_fk,
-			},
-			include: {
-				feedback: true,
-			},
-		});
+		for (let i = 0; i < feedback.length; i++) {
+			let property = await prisma.properties.findUnique({
+				where: {
+					property_id: feedback[i].property_fk,
+				},
+			});
+			feedback[i].property_fk =
+				property.unit + " " + property.street + ", " + property.city;
+			results.push(feedback[i]);
+			console.log("results length: " + results.length);
+			// console.log(defect);
+		}
 
-		// console.log(property);
-
-		property.forEach((unit) => {
-			if (unit.feedback.length > 0) {
-				// console.log(unit);
-				// console.log(unit.feedback);
-				results.push(unit);
-			}
-		});
-
-		results.forEach((feedback) => {
-			console.log(feedback);
-		});
+		console.log(results);
 
 		if (decoded.role == 1) {
 			res.render("feedback_tenant", {
