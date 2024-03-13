@@ -22,28 +22,39 @@ function verifyLandlord(req, res, next) {
     }
 }
 
-async function getProperties(userId) {
-    try {
-        return await prisma.properties.findMany({
-            where: {
-                user_id: userId
-            }
-        });
-    } catch (error) {
-        console.error(error);
-        throw new Error("An error occurred while fetching the properties");
-    }
-}
+
+// async function getProperties(userId) {
+//     console.log("User ID in getProperties");
+//     console.log(userId);
+//     try {
+//         return await prisma.properties.findMany({
+//             where: {
+//                 user_id: userId
+//             }
+//         });
+//     } catch (error) {
+//         console.error(error);
+//         throw new Error("An error occurred while fetching the properties");
+//     }
+
+// }
 
 router.get("/", verifyLandlord, async function (req, res, next) {
     try {
         const currentUserId = req.user.user_id;
-        const userProperties = await getProperties(currentUserId);
+        console.log("Current User ID");
+        console.log(currentUserId);
+        const userProperties = await prisma.properties.findMany({
+            where: {
+                user_id: currentUserId
+            }
+        });
         res.render("property", {
             title: "Landlord Properties",
             properties: userProperties,
             userEmail: req.user.email
         });
+        console.log(req.user.email);
     } catch (error) {
         console.error(error);
         res.status(500).send("An error occurred while fetching the properties");
@@ -51,4 +62,4 @@ router.get("/", verifyLandlord, async function (req, res, next) {
 });
 
 module.exports = router;
-module.exports = getProperties;
+// module.exports = getProperties;
