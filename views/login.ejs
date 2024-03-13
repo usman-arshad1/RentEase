@@ -6,9 +6,9 @@
 <body>
     <div class="vh-100 d-flex justify-content-center align-items-center flex-column">
 
-        <% if (typeof(resData) !== 'undefined' && typeof(resData['signupSuccess']) !== 'undefined') { %>
+        <% if (successMsg) { %>
             <div class="alert alert-success" role="alert">
-                <%= resData['signupSuccess'] %>
+                <%= successMsg %>
             </div>
         <% } %>
 
@@ -20,8 +20,8 @@
                     <input type="email" class="form-control" id="email-input" name="email" data-cy="email-input" placeholder="Email" maxlength="150" required>
                     <label for="email-input">Email</label>
     
-                    <% if (typeof(resData) !== 'undefined' && typeof(resData['emailInvalid']) !== 'undefined') { %>
-                        <p class="text-danger" data-cy="email-invalid"><%= resData['emailInvalid'] %></p>
+                    <% if (errorMsgs.emailInvalid) { %>
+                        <p class="text-danger" data-cy="email-invalid"><%= errorMsgs.emailInvalid %></p>
                     <% } %>
     
                 </div>
@@ -29,8 +29,8 @@
                     <input type="password" class="form-control" id="password-input" name="password" data-cy="password-input" placeholder="Password" required>
                     <label for="password-input">Password</label>
     
-                    <% if (typeof(resData) !== 'undefined' && typeof(resData['passwordInvalid']) !== 'undefined') { %>
-                        <p class="text-danger" data-cy="password-invalid"><%= resData['passwordInvalid'] %></p>
+                    <% if (errorMsgs.passwordInvalid) { %>
+                        <p class="text-danger" data-cy="password-invalid"><%= errorMsgs.passwordInvalid %></p>
                     <% } %>
     
                 </div>

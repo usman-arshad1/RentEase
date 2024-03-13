@@ -87,7 +87,6 @@ router.post('/', async function (req, res, next) {
         role: role === 'landlord' ? 1 : 2
       }
     });
-  
 
     return res.redirect('/login?message=success');
   } catch(err) {

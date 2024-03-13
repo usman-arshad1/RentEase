@@ -16,7 +16,40 @@ describe('landlord tenant list page', () => {
   it('remove tenant success', () => {
     cy.get('[data-cy="tenant-row"]').should('be.visible');
     cy.get('[data-cy="remove-tenant"]').first().click();
-    cy.url().should('include', '/landlord-tenant-list?remove=success');
+    cy.get('[data-cy="remove-valid"]').should('be.visible').contains('Successfully removed tenant from the property!');
+  });
+
+  it('email invitation sent success', () => {
+    cy.get('[data-bs-target="#invite-modal"]').click();
+    cy.wait(1000);
+    cy.get('[data-cy="email-input"]').type('renteaseproject@gmail.com', {delay: 100});
+    cy.get('[data-cy="submit-button"]').click()
+    cy.get('[data-cy="email-sent-valid"]').should('be.visible').contains('Successfully sent the email invitation!');
+  });
+
+  it('empty email', () => {
+    cy.get('[data-cy="email-input"]').invoke('removeAttr', 'required');
+    cy.get('[data-bs-target="#invite-modal"]').click();
+    cy.wait(1000);
+    cy.get('[data-cy="submit-button"]').click()
+    cy.get('[data-cy="email-invalid"]').should('be.visible').contains('Enter an email');
+  });
+
+  it('long email', () => {
+    cy.get('[data-cy="email-input"]').invoke('removeAttr', 'maxlength');
+    cy.get('[data-bs-target="#invite-modal"]').click();
+    cy.wait(1000);
+    cy.get('[data-cy="email-input"]').type('Testnametestnametestnametestnametestnametestnametestnametestnametestnametestnametestnametestnametestnametestnametestnametestnametestnametestnametestname@testname.com', { delay: 25 });
+    cy.get('[data-cy="submit-button"]').click()
+    cy.get('[data-cy="email-invalid"]').should('be.visible').contains('Enter an email up to 150 characters');
+  });
+
+  it('tenant already assigned to a property', () => {
+    cy.get('[data-bs-target="#invite-modal"]').click();
+    cy.wait(1000);
+    cy.get('[data-cy="email-input"]').type('elias@petey.com');
+    cy.get('[data-cy="submit-button"]').click()
+    cy.get('[data-cy="email-invalid"]').should('be.visible').contains('Tenant is already assigned to a property');
   });
 
 });

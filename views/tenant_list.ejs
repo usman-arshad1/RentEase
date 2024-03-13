@@ -3,18 +3,30 @@
 <div class="container">
     <h1>Tenant List</h1>
 
-    <% if (typeof(resData) !== 'undefined' && typeof(resData['properties']) !== 'undefined' && resData['properties'].length !== 0) { %>
+    <% if (data.properties.length !== 0) { %>
         <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#invite-modal">Invite New Tenant</button>
         <hr />
     <% } %>
 
-    <% if (typeof(resData) !== 'undefined' && typeof(resData['removeSuccess']) !== 'undefined') { %>
-        <div class="alert alert-success" role="alert">
-            <%= resData['removeSuccess'] %>
+    <% if (messages.emailInvalid) { %>
+        <div class="alert alert-danger" role="alert" data-cy="email-invalid">
+            <%= messages.emailInvalid %>
         </div>
     <% } %>
 
-    <% if (typeof(resData) !== 'undefined' && typeof(resData['tenants']) !== 'undefined') { %>
+    <% if (messages.removeValid) { %>
+        <div class="alert alert-success" role="alert" data-cy="remove-valid">
+            <%= messages.removeValid %>
+        </div>
+    <% } %>
+
+    <% if (messages.emailSentValid) { %>
+        <div class="alert alert-success" role="alert" data-cy="email-sent-valid">
+            <%= messages.emailSentValid %>
+        </div>
+    <% } %>
+
+    <% if (data.tenants) { %>
         <div class="table-responsive">
             <table class="table table-hover table-striped" data-cy="tenant-list-table">
                 <thead class="table-dark">
@@ -27,7 +39,7 @@
                 </thead>
                 <tbody>
 
-                    <% resData['tenants'].forEach(tenant => { %>
+                    <% data.tenants.forEach(tenant => { %>
                         <tr data-cy="tenant-row">
                             <td><%= `${tenant.unit} ${tenant.street}, ${tenant.city}, ${tenant.country}` %></td>
                             <td><%= `${tenant.first_name} ${tenant.last_name}` %></td>  
@@ -59,20 +71,15 @@
                     <div class="form-floating mb-3">
                         <input type="email" class="form-control" id="email-input" name="email" placeholder="Email" data-cy="email-input" required>
                         <label for="email-input">Email</label>
-
-                        <% if (typeof(resData) !== 'undefined' && typeof(resData['emailInvalid']) !== 'undefined') { %>
-                            <p class="text-danger"><%= resData['emailInvalid'] %></p>
-                        <% } %>
-
                     </div>
                     <div class="mb-3">
                         <select class="form-select" name="property">
 
-                            <% for (let i = 0; typeof(resData['properties']) !== 'undefined' && i < resData['properties'].length; i++) { %>
+                            <% for (let i = 0; i < data.properties.length; i++) { %>
                                 <% if (i === 0) { %>
-                                    <option value="<%= resData['properties'][i].property_id %>" selected><%= `${resData['properties'][i].unit} ${resData['properties'][i].street}, ${resData['properties'][i].city}, ${resData['properties'][i].country}` %></option>
+                                    <option value="<%= data.properties[i].property_id %>" selected><%= `${data.properties[i].unit} ${data.properties[i].street}, ${data.properties[i].city}, ${data.properties[i].country}` %></option>
                                 <% } else { %>
-                                    <option value="<%= resData['properties'][i].property_id %>"><%= `${resData['properties'][i].unit} ${resData['properties'][i].street}, ${resData['properties'][i].city}, ${resData['properties'][i].country}` %></option>
+                                    <option value="<%= data.properties[i].property_id %>"><%= `${data.properties[i].unit} ${data.properties[i].street}, ${data.properties[i].city}, ${data.properties[i].country}` %></option>
                                 <% } %>
                             <% } %>
 

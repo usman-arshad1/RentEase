@@ -7,13 +7,29 @@ const prisma = new PrismaClient();
 
 function generateJWT(property_id, tenant_id) {
 	return jwt.sign({ property_id, tenant_id }, process.env.JWT_SECRET, { expiresIn: '12h' });
-  }
+}
 
-function validateInput(email) {
+async function validateInput(email) {
 	const resData = {};
 
 	if (!email) {
-		resData['emailInvalid'] = 'Please enter a valid email';
+		resData['emailInvalid'] = 'Enter an email';
+		return resData;
+	} else if (email.length > 150) {
+		resData["emailInvalid"] = "Enter an email up to 150 characters";
+		return resData;
+	}
+
+	const user = await prisma.user.findUnique({
+		where: {
+			email: email,
+			property_fk: null,
+			role: 2
+		}
+	});
+
+	if (!user) {
+		resData["emailInvalid"] = "Tenant is already assigned to a property";
 	}
 
 	return resData;
@@ -52,7 +68,7 @@ function sendEmail(email, tenant_id, property) {
 }
 
 router.get("/", async function (req, res, next) {
-	const resData = {};
+	const data = {};
 	const existingToken = req.cookies.jwt;
 
 	if (!existingToken) {
@@ -70,6 +86,8 @@ router.get("/", async function (req, res, next) {
 			}
 
 			try {
+				const messages = req.flash('messages')[0] || {};
+
 				const properties = await prisma.properties.findMany({
 					where: {
 						user_id: decoded.user_id,
@@ -107,10 +125,10 @@ router.get("/", async function (req, res, next) {
 					}
 				});
 
-				resData['tenants'] = tenantResults;
-				resData['properties'] = propertyResults;
+				data['tenants'] = tenantResults;
+				data['properties'] = propertyResults;
 
-				return res.render("tenant_list", { title: "List of Tenants - RentEase", resData });
+				return res.render("tenant_list", { title: "List of Tenants - RentEase", data, messages });
 			} catch (err) {
 				console.log(err);
 			} finally {
@@ -166,7 +184,14 @@ router.get("/remove/:user_id", async function (req, res, next) {
 						data: {
 							property_fk: null
 						}
-					})
+					});
+
+					resData['removeValid'] = 'Successfully removed tenant from the property!';
+				}
+
+				if (Object.keys(resData).length > 0) {
+					req.flash('messages', resData);
+					return res.redirect('/landlord-tenant-list');
 				}
 
 				return res.redirect('/landlord-tenant-list');
@@ -181,7 +206,7 @@ router.get("/remove/:user_id", async function (req, res, next) {
 
 router.post('/', async function (req, res, next) {
 	const { email, property } = req.body;
-	const resData = validateInput(email);
+	const resData = await validateInput(email);
 	const existingToken = req.cookies.jwt;
 	const propertyId = parseInt(property, 10);
 
@@ -200,15 +225,8 @@ router.post('/', async function (req, res, next) {
 					return res.redirect('/');
 				}
 
-				const user = await prisma.user.findUnique({
-					where: {
-						email: email,
-						property_fk: null,
-						role: 2
-					}
-				});
-
-				if (!user) {
+				if (Object.keys(resData).length > 0) {
+					req.flash('messages', resData);
 					return res.redirect('/landlord-tenant-list');
 				}
 
@@ -218,7 +236,20 @@ router.post('/', async function (req, res, next) {
 					}
 				}); 
 
+				const user = await prisma.user.findUnique({
+					where: {
+						email: email,
+						property_fk: null,
+						role: 2
+					}
+				});
+
 				if (sendEmail(email, user.user_id, selectedProperty) === 0) {
+					resData['emailSentValid'] = 'Successfully sent the email invitation!';
+				}
+
+				if (Object.keys(resData).length > 0) {
+					req.flash('messages', resData);
 					return res.redirect('/landlord-tenant-list');
 				}
 			} catch (err) {
@@ -228,10 +259,6 @@ router.post('/', async function (req, res, next) {
 			}
 		}
 	});
-
-	// if (Object.keys(resData).length > 0) {
-	// 	return res.status(400).render('tenant_list', { resData });
-	// }
 });
 
 module.exports = router;
