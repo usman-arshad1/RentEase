@@ -3,7 +3,6 @@ var router = express.Router();
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 const jwt = require("jsonwebtoken");
-const { forEach } = require("async");
 
 async function getFeedback(req, res) {
 	const existingToken = req.cookies.jwt;
@@ -20,6 +19,11 @@ async function getFeedback(req, res) {
 			console.log("user's token has expired.");
 			return res.redirect("/login");
 		}
+
+		if (decoded.role == 1) {
+			return res.redirect("/landlord-feedback");
+		}
+
 		let results = [];
 
 		const user = await prisma.user.findUnique({
@@ -60,14 +64,12 @@ async function getFeedback(req, res) {
 
 		console.log(results);
 
-		if (decoded.role == 1) {
+		if (decoded.role == 2) {
 			res.render("feedback_tenant", {
 				title: "Tenant Feedback",
 				results: results,
 				username: username,
 			});
-		} else if (decoded.role == 2) {
-			return res.redirect("/landlord-feedback");
 		}
 	} catch (err) {
 		console.log(err);
