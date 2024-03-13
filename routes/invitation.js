@@ -25,7 +25,7 @@ router.get('/', function(req, res, next) {
                     }
                 })
 
-                resData['inviteSuccess'] = 'Successfully invited!'
+                resData['inviteSuccess'] = 'Successfully invited!';
                 return res.render('invitation', { resData });
             } catch (err) {
                 console.log(err);

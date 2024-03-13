@@ -4,7 +4,21 @@ const bcrypt = require('bcrypt');
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
-function validateInput(fname, lname, email, password, role) {
+async function existingEmail(email) {
+  const existingUser = await prisma.user.findUnique({
+    where: {
+      email: email
+    }
+  });
+
+  if (existingUser) {
+    return true;
+  }
+
+  return false;
+}
+
+async function validateInput(fname, lname, email, password, role) {
   const resData = {};
 
   if (!fname) {
@@ -14,23 +28,25 @@ function validateInput(fname, lname, email, password, role) {
   }
 
   if (!lname) {
-    resData['lnameInvalid'] = 'Please enter a last name';
+    resData['lnameInvalid'] = 'Enter a last name';
   } else if (lname.length > 150) {
     resData['lnameInvalid'] = 'Enter a last name up to 150 characters';
   }
 
   if (!email) {
-    resData['emailInvalid'] = 'Enter a valid email';
+    resData['emailInvalid'] = 'Enter an email';
   } else if (email.length > 150) {
     resData['emailInvalid'] = 'Enter an email up to 150 characters';
+  } else if (await existingEmail(email)) {
+    resData['emailInvalid'] = `Email has already been registered`;
   }
 
   if (!password) {
-    resData['passwordInvalid'] = 'Enter a valid password';
+    resData['passwordInvalid'] = 'Enter a password';
   }
 
   if (!role || (role !== 'landlord' && role !== 'tenant')) {
-    resData['roleInvalid'] = 'Select a valid role';
+    resData['roleInvalid'] = 'Select a role';
   }
 
   return resData;
@@ -48,31 +64,20 @@ async function hashPassword(password) {
 }
 
 router.get('/', function (req, res, next) {
-  res.render('signup');
+  const errorMsgs = req.flash('errors')[0] || {};
+  res.render('signup', { errorMsgs });
 });
 
 router.post('/', async function (req, res, next) {
   const { fname, lname, email, password, role } = req.body;
-  const resData = validateInput(fname, lname, email, password, role);
+  const resData = await validateInput(fname, lname, email, password, role);
 
   if (Object.keys(resData).length > 0) {
-    res.status(400).render('signup', { resData });
-    return;
+    req.flash('errors', resData);
+    return res.redirect('/signup');
   }
 
   try {
-    const existingUser = await prisma.user.findUnique({
-      where: {
-        email: email
-      }
-    });
-
-    if (existingUser) {
-      resData['emailInvalid'] = `Email has already been registered`;
-      res.status(400).render('signup', { resData });
-      return;
-    }
-
     await prisma.user.create({
       data: {
         first_name: fname,

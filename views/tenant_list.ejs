@@ -1,7 +1,5 @@
 <%- include("templates/header_LL") %>
 
-<% let i = 1; %>
-
 <div class="container">
     <h1>Tenant List</h1>
 
@@ -10,9 +8,15 @@
         <hr />
     <% } %>
 
+    <% if (typeof(resData) !== 'undefined' && typeof(resData['removeSuccess']) !== 'undefined') { %>
+        <div class="alert alert-success" role="alert">
+            <%= resData['removeSuccess'] %>
+        </div>
+    <% } %>
+
     <% if (typeof(resData) !== 'undefined' && typeof(resData['tenants']) !== 'undefined') { %>
         <div class="table-responsive">
-            <table class="table table-hover table-striped">
+            <table class="table table-hover table-striped" data-cy="tenant-list-table">
                 <thead class="table-dark">
                     <tr>
                         <th>Property</th>
@@ -22,19 +26,20 @@
                     </tr>
                 </thead>
                 <tbody>
+
                     <% resData['tenants'].forEach(tenant => { %>
-                        <tr>
+                        <tr data-cy="tenant-row">
                             <td><%= `${tenant.unit} ${tenant.street}, ${tenant.city}, ${tenant.country}` %></td>
                             <td><%= `${tenant.first_name} ${tenant.last_name}` %></td>  
                             <td><%= tenant.email %></td>
                             <td>
                                 <form method="GET" action="<%= tenant.action %>">
-                                    <button type="submit" id="<%=i%>.delete" class="btn btn-danger btn-sm">Remove</button>
+                                    <button type="submit" data-cy="remove-tenant" class="btn btn-danger btn-sm">Remove</button>
                                 </form>
                             </td>
                         </tr>
-                        <% i++ %>
                     <% }) %>
+
                 </tbody>
             </table>
         </div>
@@ -52,7 +57,7 @@
             <div class="modal-body">
                 <form id="invite-form" method="POST" action="/landlord-tenant-list">
                     <div class="form-floating mb-3">
-                        <input type="email" class="form-control" id="email-input" name="email" placeholder="Email" required>
+                        <input type="email" class="form-control" id="email-input" name="email" placeholder="Email" data-cy="email-input" required>
                         <label for="email-input">Email</label>
 
                         <% if (typeof(resData) !== 'undefined' && typeof(resData['emailInvalid']) !== 'undefined') { %>
@@ -62,6 +67,7 @@
                     </div>
                     <div class="mb-3">
                         <select class="form-select" name="property">
+
                             <% for (let i = 0; typeof(resData['properties']) !== 'undefined' && i < resData['properties'].length; i++) { %>
                                 <% if (i === 0) { %>
                                     <option value="<%= resData['properties'][i].property_id %>" selected><%= `${resData['properties'][i].unit} ${resData['properties'][i].street}, ${resData['properties'][i].city}, ${resData['properties'][i].country}` %></option>
@@ -69,6 +75,7 @@
                                     <option value="<%= resData['properties'][i].property_id %>"><%= `${resData['properties'][i].unit} ${resData['properties'][i].street}, ${resData['properties'][i].city}, ${resData['properties'][i].country}` %></option>
                                 <% } %>
                             <% } %>
+
                         </select>
                     </div>
                     <button type="submit" data-cy="submit-button" class="btn btn-primary">Submit</button>
