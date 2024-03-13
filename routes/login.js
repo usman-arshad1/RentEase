@@ -5,7 +5,7 @@ const jwt = require("jsonwebtoken");
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 const getAnnouncements = require("./announcement_tenant");
-const getProperties = require("./property")
+// const getProperties = require("./property");
 
 function generateJWT(user_id, email, role) {
 	return jwt.sign({ user_id, email, role }, process.env.JWT_SECRET, {
@@ -74,7 +74,11 @@ router.post("/", async function (req, res, next) {
 				secure: true,
 			});
 			if (existingUser.role === 1) {
-				var properties = await getProperties(existingUser.user_id);
+				var properties = await prisma.properties.findMany({
+					where: {
+						user_id: existingUser.user_id,
+					},
+				});
 				return res.render("property", { properties });
 			} else {
 				var properties = await getAnnouncements(req, res);
@@ -90,5 +94,6 @@ router.post("/", async function (req, res, next) {
 		prisma.$disconnect();
 	}
 });
+
 
 module.exports = router;
