@@ -5,10 +5,24 @@ const prisma = new PrismaClient();
 const jwt = require("jsonwebtoken");
 const { forEach } = require("async");
 
+function getDate() {
+	const date = new Date();
+
+	let day = date.getDate();
+	let month = date.getMonth() + 1;
+	let year = date.getFullYear();
+
+	return `${day}-${month}-${year}`;
+	// console.log(curr_date); // "29-02-2024"
+}
+
 async function newFeedback(req, res) {
 	const existingToken = req.cookies.jwt;
+	const { title, category, description } = req.body;
 
-	console.log(req.body);
+	// console.log(title);
+	// console.log(category);
+	// console.log(description);
 
 	if (!existingToken) {
 		console.log("user is not signed in.");
@@ -30,57 +44,26 @@ async function newFeedback(req, res) {
 			},
 		});
 
-		let username = user.first_name + " " + user.last_name;
+		let property = await prisma.properties.findUnique({
+			where: {
+				property_id: user.property_fk,
+			},
+		});
 
-		return res.redirect("/tenant_feedback");
+		let curr_date = getDate();
+		// console.log(curr_date); // "29-02-2024"
 
-		// 	const feedback = await prisma.feedback.findMany({
-		// 		where: {
-		// 			user_id_fk: user.user_id,
-		// 		},
-		// 		include: {
-		// 			user: true,
-		// 		},
-		// 	});
-
-		// 	console.log(feedback);
-
-		// 	if (feedback.feedback_id === null) {
-		// 		return res.render("feedback_tenant", { results: results });
-		// 	}
-
-		// 	const property = await prisma.properties.findMany({
-		// 		where: {
-		// 			property_id: feedback.property_fk,
-		// 		},
-		// 		include: {
-		// 			feedback: true,
-		// 		},
-		// 	});
-
-		// 	// console.log(property);
-
-		// 	property.forEach((unit) => {
-		// 		if (unit.feedback.length > 0) {
-		// 			// console.log(unit);
-		// 			// console.log(unit.feedback);
-		// 			results.push(unit);
-		// 		}
-		// 	});
-
-		// 	results.forEach((feedback) => {
-		// 		console.log(feedback);
-		// 	});
-
-		// 	if (decoded.role == 1) {
-		// 		res.render("feedback_tenant", {
-		// 			title: "Tenant Feedback",
-		// 			results: results,
-		// 			username: username,
-		// 		});
-		// 	} else if (decoded.role == 2) {
-		// 		return res.redirect("/landlord-feedback");
-		// 	}
+		await prisma.feedback.create({
+			data: {
+				title: title,
+				category: parseInt(category),
+				description: description,
+				date: curr_date,
+				status: 1,
+				property_fk: user.property_fk,
+				user_id_fk: user.user_id,
+			},
+		});
 	} catch (err) {
 		console.log(err);
 		if (err.name === "TokenExpiredError") {
@@ -95,9 +78,8 @@ async function newFeedback(req, res) {
 }
 
 router.post("/", async function (req, res, next) {
-	// await newFeedback(req, res);
-	console.log(req.body);
-	res.redirect("/tenant-feedback");
+	await newFeedback(req, res);
+	return res.redirect("/tenant-feedback");
 });
 
 router.get("/", function (req, res, next) {
