@@ -1,0 +1,68 @@
+<%- include("templates/header_tenant") %>
+<div class="container-lg">
+    <div class="text-center">
+        <h2>Update Feedback</h2>
+        <p class="lead">Respond to tenant's feedback using the update section.</p>
+    </div>
+    <div class="row justify-content-center my-5">
+        <div class="col-lg-6">
+                
+            <form action="/tenant-feedback" method="get">
+                <div class="form-floating mb-4 mt-4">
+                    <div class="form-control" name="property">
+                        <label for="property"><%= results.property_fk %></label>
+                    </div>
+                </div>
+                <div class="form-floating mb-4 mt-4">
+                    <div class="form-control" name="title">
+                        <label for="title"><%= results.date + ': ' + results.title %></label>
+                    </div>
+                </div>
+                <div class="form-floating mb-4 mt-4">
+                    <div class="form-control" name="category">
+                        <label for="category"><%= results.category %></label>
+                    </div>  
+                </div>
+                <div class="form-floating mb-4 mt-4">
+                    <div class="form-control" name="status">
+                        <label for="status">
+                            <% if (results.status == 1){ %>
+                                Received
+                            <%} else if (results.status == 2){ %>
+                                In-Progress
+                            <%} else if (results.status == 3){ %>
+                                Completed
+                            <%} %>
+                        </label>
+                    </div>
+                </div>
+                <!-- TO ADD FUNCTIONALITY FOR VIEWING IMAGES -->
+                <!-- <div class="mb-4 text-center">
+                <label for="photo">Upload a Photo</label>
+                <button type="submit" class="btn btn-secondary">Upload</button>
+                </div> -->
+                <div class="text-left mt-4 mb-1" style="font-size: small;">
+                    New updates go to the top. Example: <br> Date (auto-generated): Completed <br> Date (auto-generated): Sending Someone tomorrow.
+                </div>
+                <div class="form-floating mb-4">
+                    <textarea type="text" name="update" style="height: 140px" class="form-control"><%= results.update %></textarea>
+                    <!-- <div class="form-control" name="update" style="height: 140px;"> -->
+                    <label for="update">Updates from the Landlord</label>
+                    </div>
+                </div>
+
+                <div class="text-center">
+                    <button type="submit" class="btn btn-secondary">Back</button>
+                </div>
+            </form>
+        </div>
+
+    </div>
+
+
+
+</div>
+
+
+
+<%- include("templates/footer") %>

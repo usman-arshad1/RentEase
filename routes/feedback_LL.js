@@ -3,7 +3,6 @@ var router = express.Router();
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 const jwt = require("jsonwebtoken");
-const { forEach } = require("async");
 
 async function getFeedback(req, res) {
 	const existingToken = req.cookies.jwt;
@@ -20,6 +19,11 @@ async function getFeedback(req, res) {
 			console.log("user's token has expired.");
 			return res.redirect("/login");
 		}
+
+		if (decoded.role == 2) {
+			return res.redirect("/tenant-feedback");
+		}
+
 		let results = [];
 
 		const user = await prisma.user.findUnique({
@@ -29,53 +33,96 @@ async function getFeedback(req, res) {
 		});
 
 		let username = user.first_name + " " + user.last_name;
+		console.log(user);
 
-		const feedback = await prisma.feedback.findMany({
+		//FIRST GET USER PROPERTY LIST
+		//THEN GET THE FEEDBACK FOR EACH PROPERTY
+
+		let property = await prisma.properties.findMany({
 			where: {
-				user_id_fk: user.user_id,
-			},
-			include: {
-				user: true,
+				user_id: user.user_id,
 			},
 		});
+		console.log("property length: " + property.length);
+		console.log(property);
 
-		console.log(feedback);
-
-		if (feedback.feedback_id === null) {
-			return res.render("feedback_tenant", { results: results });
+		if (property.length == 0) {
+			return res.render("feedback_LL", { results: results });
 		}
 
-		const property = await prisma.properties.findMany({
+		let feedback = await prisma.feedback.findMany({
 			where: {
-				property_id: feedback.property_fk,
-			},
-			include: {
-				feedback: true,
-			},
-		});
-
-		// console.log(property);
-
-		property.forEach((unit) => {
-			if (unit.feedback.length > 0) {
-				// console.log(unit);
-				// console.log(unit.feedback);
-				results.push(unit);
+				property_fk: property.property_id,
 			}
 		});
 
-		results.forEach((feedback) => {
-			console.log(feedback);
+		let users = await prisma.user.findMany({
+			where: {
+				property_fk: property.property_id,
+			}
 		});
+		
+		console.log("feedback length: " + feedback.length);
+		console.log(feedback);
+
+		if (feedback.length == 0) {
+			return res.render("feedback_LL", { results: results });
+		}
+
+		for (let i = 0; i < property.length; i++) {
+			for (let j = 0; j < feedback.length; j++) {
+				if(property[i].property_id == feedback[j].property_fk){
+					let user = await prisma.user.findUnique({
+						where: {
+							user_id: feedback[j].user_id_fk
+						}
+					});
+					switch(feedback[j].category){
+						case 1:	
+							feedback[j].category = "Structural";
+							break;
+						case 2:	
+							feedback[j].category = "Safety";
+							break;
+						case 3:	
+							feedback[j].category = "Cosmetic";
+							break;
+						case 4:	
+							feedback[j].category = "Applicance";
+							break;
+						case 5:	
+							feedback[j].category = "Other";
+							break;
+					}
+					switch(feedback[j].status){
+						case 1:	
+							feedback[j].status = "Received";
+							break;
+						case 2:	
+							feedback[j].status = "In-Progress";
+							break;
+						case 3:	
+							feedback[j].status = "Completed";
+							break;
+					}
+					feedback[j].user_id_fk = user.first_name + ", " + user.last_name;
+					feedback[j].property_fk = property[i].unit + " " + property[i].street + ", " + property[i].city;
+					results.push(feedback[j]);
+				}
+				
+			}
+			
+			console.log("results length: " + results.length);
+		}
+
+		console.log(results);
 
 		if (decoded.role == 1) {
-			res.render("feedback_tenant", {
-				title: "Tenant Feedback",
+			res.render("feedback_LL", {
+				title: "Landlord Feedback",
 				results: results,
-				username: username,
+				username: "username",
 			});
-		} else if (decoded.role == 2) {
-			return res.redirect("/landlord-feedback");
 		}
 	} catch (err) {
 		console.log(err);
@@ -95,7 +142,3 @@ router.get("/", async function (req, res, next) {
 });
 
 module.exports = router;
-
-// router.get("/", function (req, res, next) {
-// 	res.render("feedback_LL", { title: "Landlord Feedback" });
-// });
