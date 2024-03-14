@@ -45,6 +45,7 @@ router.get("/", verifyLandlord, async function (req, res, next) {
 	}
 });
 
+// Deletion
 router.post("/:id", async(req, res) => {
 	const {id} =  req.params;
 	try {
@@ -55,7 +56,52 @@ router.post("/:id", async(req, res) => {
 		});
 		res.redirect("/landlord-properties")
 	} catch(e) {
-		res.status(500).send("Failed")
+		res.status(500).send("Deletion failed")
+	}
+})
+
+
+router.get("/update/:id", async(req, res) => {
+	const {id} = req.params;
+	try {
+		const property_id = parseInt(id);
+		const currentProperty = await prisma.properties.findUnique({
+			where: {
+				property_id: property_id
+			}
+		})
+		res.render("update_property", {
+			title: "Update property",
+			property: currentProperty
+		})
+	} catch (error) {
+		res.status(500).send("Failed");
+	}
+})
+// Update
+router.post("/update/:id", verifyLandlord, async (req, res)=> {
+	const {id} = req.params
+	const {unit, street, city, province_state, country} = req.body
+	try {
+		const property_id = parseInt(id);
+		const property_unit = parseInt(unit);
+
+		const updateProperty = await prisma.properties.update({
+			where: {
+				property_id: property_id
+			},
+			data:
+				{
+					unit:property_unit,
+					street: street,
+					city: city,
+					province_state: province_state,
+					country: country
+				},
+		})
+		res.redirect("/landlord-properties")
+	} catch(e) {
+		res.status(500).send("Update failed")
 	}
 })
 

@@ -26,7 +26,12 @@
                 <td><%= property.city %></td>
                 <td><%= property.province_state %></td>
                 <td><%= property.country %></td>
-                <td><button>update</button></td>
+                <td>
+                    <a href="/landlord-properties/update/<%=property.property_id%>">
+                        <button>
+                            Update
+                        </button>
+                    </a>
                 <td>
                     <form action="/landlord-properties/<%=property.property_id%>"
                           method="POST"
