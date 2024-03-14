@@ -35,7 +35,6 @@ router.get("/", verifyLandlord, async function (req, res, next) {
             properties: userProperties,
             userEmail: req.user.email
         });
-        console.log(req.user.email);
     } catch (error) {
         console.error(error);
         res.status(500).send("An error occurred while fetching the properties");

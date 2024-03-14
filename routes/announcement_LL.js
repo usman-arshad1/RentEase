@@ -20,17 +20,14 @@ async function getAnnouncements(req, res) {
 
 	try {
 		const decoded = jwt.verify(existingToken, process.env.JWT_SECRET);
-
 		const user = await prisma.user.findUnique({
 			where: {
 				user_id: decoded.user_id
 			}
 		});
-
 		if (!user) {
 			return res.status(400).json({ error: 'User not found' });
 		}
-
 		const properties = await prisma.properties.findMany({
 			where: {
 				user_id: user.user_id
@@ -40,10 +37,14 @@ async function getAnnouncements(req, res) {
 			}
 		});
 
+		// Merge the announcements from the property into a single array
+		
+		// console.log(properties);
 		if (properties.length === 0) {
 			return res.render('announcement_LL', { properties: [] });
 		} else {
-			res.render('announcement_LL', { properties });
+			// console.log(properties);
+			return res.render('announcement_LL', { properties });
 		}
 	} catch (err) {
 		if (err.name === 'TokenExpiredError') {
@@ -52,7 +53,6 @@ async function getAnnouncements(req, res) {
 	}
 
 }
-
 
 /**
  * Submit an announcement
@@ -94,6 +94,12 @@ async function submitAnnouncement(req, res) {
 	res.render('announcement_LL', { properties });
 }
 
+/**
+ * Removes an announcement
+ * @param {*} req The req object
+ * @param {*} res The res object
+ * @returns None
+ */
 async function removeAnnouncement(req, res) {
 	const { announcement_id } = req.body;
 	const announcementIdInt = parseInt(announcement_id);
@@ -117,8 +123,6 @@ async function removeAnnouncement(req, res) {
 	res.render('announcement_LL', { properties });
 }
 
-
-
 router.post("/", async function (req, res, next) {
 	if (req.body.announcement_id) {
 		// Request is for removing an announcement
@@ -133,5 +137,6 @@ router.post("/", async function (req, res, next) {
 router.get("/", async function (req, res, next) {
 	await getAnnouncements(req, res);
 });
+
 
 module.exports = router;

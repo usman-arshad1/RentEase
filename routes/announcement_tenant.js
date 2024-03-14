@@ -58,6 +58,7 @@ async function getAnnouncements(req, res) {
 					});
 					res.render('announcement_tenant', { properties });
 			}
+
 	} catch (err) {
 			if (err.name === 'TokenExpiredError') {
 					return res.redirect('/login');
