@@ -46,7 +46,7 @@ router.get("/", verifyLandlord, async function (req, res, next) {
 });
 
 // Deletion
-router.post("/:id", async(req, res) => {
+router.post("/:id", verifyLandlord, async (req, res) => {
 	const {id} =  req.params;
 	try {
 		await prisma.properties.delete({
@@ -61,7 +61,7 @@ router.post("/:id", async(req, res) => {
 })
 
 
-router.get("/update/:id", async(req, res) => {
+router.get("/update/:id", verifyLandlord, async (req, res) => {
 	const {id} = req.params;
 	try {
 		const property_id = parseInt(id);
