@@ -78,6 +78,8 @@ app.use(function (req, res, next) {
 	next(createError(404));
 });
 
+//TODO Maybe change to make a call to get properties and/or announcements before rendering the page
+
 app.listen(port, () => {
 	console.log(`Rent Ease web app listening at http://localhost:${port}`);
 });

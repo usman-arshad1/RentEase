@@ -22,28 +22,9 @@ function verifyLandlord(req, res, next) {
     }
 }
 
-
-// async function getProperties(userId) {
-//     console.log("User ID in getProperties");
-//     console.log(userId);
-//     try {
-//         return await prisma.properties.findMany({
-//             where: {
-//                 user_id: userId
-//             }
-//         });
-//     } catch (error) {
-//         console.error(error);
-//         throw new Error("An error occurred while fetching the properties");
-//     }
-
-// }
-
 router.get("/", verifyLandlord, async function (req, res, next) {
     try {
         const currentUserId = req.user.user_id;
-        console.log("Current User ID");
-        console.log(currentUserId);
         const userProperties = await prisma.properties.findMany({
             where: {
                 user_id: currentUserId
@@ -62,4 +43,3 @@ router.get("/", verifyLandlord, async function (req, res, next) {
 });
 
 module.exports = router;
-// module.exports = getProperties;

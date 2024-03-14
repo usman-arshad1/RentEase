@@ -61,6 +61,7 @@ async function getAnnouncements(req, res) {
  * @returns  The updated list of properties
  */
 async function submitAnnouncement(req, res) {
+	//TODO Validate that the user did provide an announcement. If not, return a message to the user
 	const { property_id, announcement } = req.body;
 	const propertyIdInt = parseInt(property_id);
 	const newAnnouncement = await prisma.announcements.create({

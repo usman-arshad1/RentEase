@@ -69,13 +69,9 @@ async function getAnnouncements(req, res) {
 }
 
 
-
-
 router.get("/", async function (req, res, next) {
 	await getAnnouncements(req, res);
 });
 
 
-
 module.exports = router;
-module.exports = getAnnouncements;
