@@ -9,8 +9,6 @@
 <body>
 <h1>Update Property</h1>
 
-<h1>hi <%= property.property_id%></h1>
-
 <form action="/landlord-properties/update/<%= property.property_id %>" method="POST">
     <input type="hidden" name="_method" value="PUT">
     <label for="unit">Unit</label><br>

@@ -22,6 +22,7 @@ function verifyLandlord(req, res, next) {
 	}
 }
 
+
 router.get("/", verifyLandlord, async function (req, res, next) {
 	try {
 		// Extract the current user's ID from the request
@@ -45,40 +46,50 @@ router.get("/", verifyLandlord, async function (req, res, next) {
 	}
 });
 
-// Deletion
+// Delete property
 router.post("/:id", verifyLandlord, async (req, res) => {
 	const {id} =  req.params;
+
 	try {
-		await prisma.properties.delete({
+		const property = await prisma.properties.delete({
 			where:{
 				property_id:parseInt(id),
 			},
 		});
+
 		res.redirect("/landlord-properties")
 	} catch(e) {
 		res.status(500).send("Deletion failed")
 	}
 })
 
-
+// Update property page
 router.get("/update/:id", verifyLandlord, async (req, res) => {
 	const {id} = req.params;
+	const property_id = parseInt(id);
+	const user_id = req.user.user_id
+
 	try {
-		const property_id = parseInt(id);
 		const currentProperty = await prisma.properties.findUnique({
 			where: {
-				property_id: property_id
+				property_id: property_id,
+				user_id: user_id
 			}
 		})
-		res.render("update_property", {
-			title: "Update property",
-			property: currentProperty
-		})
+		if (!currentProperty) {
+			res.status(500).send("You can only access to your own property")
+		}
+		else {
+			res.render("update_property", {
+				title: "Update property",
+				property: currentProperty
+			})
+		}
 	} catch (error) {
 		res.status(500).send("Failed");
 	}
 })
-// Update
+// Update property
 router.post("/update/:id", verifyLandlord, async (req, res)=> {
 	const {id} = req.params
 	const {unit, street, city, province_state, country} = req.body
