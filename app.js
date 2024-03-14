@@ -16,12 +16,14 @@ var signoutRouter = require("./routes/signout");
 //Landlord User Route Config
 var announcementLLRouter = require("./routes/announcement_LL");
 var feedbackLLRouter = require("./routes/feedback_LL");
+var viewFeedbackLLRouter = require("./routes/view_feedback_LL");
 var propertyRouter = require("./routes/property");
 var tenantListRouter = require("./routes/tenant_list");
 
 //Tenant User Route Config
 var announcementTenantRouter = require("./routes/announcement_tenant");
 var feedbackTenantRouter = require("./routes/feedback_tenant");
+var viewFeedbackTenantRouter = require("./routes/view_feedback_tenant");
 var newFeedbackTenantRouter = require("./routes/new_feedback");
 
 //To Confirm if still required
@@ -49,12 +51,14 @@ app.use("/signout", signoutRouter);
 // Landlord User Routes
 app.use("/landlord-announcements", announcementLLRouter);
 app.use("/landlord-feedback", feedbackLLRouter);
+app.use("/landlord-view-feedback/", viewFeedbackLLRouter);
 app.use("/landlord-properties", propertyRouter);
 app.use("/landlord-tenant-list", tenantListRouter);
 
 //Tenant User Routes
 app.use("/tenant-announcements", announcementTenantRouter);
 app.use("/tenant-feedback", feedbackTenantRouter);
+app.use("/tenant-view-feedback/", viewFeedbackTenantRouter);
 app.use("/new-feedback", newFeedbackTenantRouter);
 // app.use("/submit-feedback", newFeedbackTenantRouter);
 

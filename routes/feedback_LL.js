@@ -96,7 +96,7 @@ async function getFeedback(req, res) {
 					}
 					switch(feedback[j].status){
 						case 1:	
-							feedback[j].status = "Pending";
+							feedback[j].status = "Received";
 							break;
 						case 2:	
 							feedback[j].status = "In-Progress";
