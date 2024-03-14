@@ -38,7 +38,6 @@ router.get("/", verifyLandlord, async function (req, res, next) {
 		res.render("property", {
 			title: "Landlord Properties",
 			properties: userProperties,
-			userEmail: req.user.email
 		});
 	} catch (error) {
 		console.error(error);
@@ -46,5 +45,18 @@ router.get("/", verifyLandlord, async function (req, res, next) {
 	}
 });
 
+router.post("/:id", async(req, res) => {
+	const {id} =  req.params;
+	try {
+		await prisma.properties.delete({
+			where:{
+				property_id:parseInt(id),
+			},
+		});
+		res.redirect("/landlord-properties")
+	} catch(e) {
+		res.status(500).send("Failed")
+	}
+})
 
 module.exports = router;

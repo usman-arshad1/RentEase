@@ -5,6 +5,7 @@ var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 const dotenv = require("dotenv");
 const port = process.env.PORT || 8080;
+const methodOverride = require("method-override")
 
 dotenv.config();
 
@@ -37,6 +38,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
+app.use(methodOverride('_method'));
 
 app.use("/", indexRouter);
 app.use("/users", usersRouter);

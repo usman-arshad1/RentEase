@@ -26,6 +26,19 @@
                 <td><%= property.city %></td>
                 <td><%= property.province_state %></td>
                 <td><%= property.country %></td>
+                <td><button>update</button></td>
+                <td>
+                    <form action="/landlord-properties/<%=property.property_id%>"
+                          method="POST"
+                          onsubmit="return confirm(
+                              'Do you want to delete this property'
+                    )">
+                        <input type="hidden" name="_method" value="DELETE">
+                        <button type="submit">
+                            delete
+                        </button>
+                    </form>
+                </td>
             </tr>
         <% } %>
         </tbody>
