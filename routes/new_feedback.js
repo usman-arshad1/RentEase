@@ -44,6 +44,12 @@ async function newFeedback(req, res) {
 			},
 		});
 
+		console.log(user);
+
+		if (Object.is(user.property_fk, null)) {
+			return res.redirect("/tenant-feedback");
+		}
+
 		let property = await prisma.properties.findUnique({
 			where: {
 				property_id: user.property_fk,
@@ -64,6 +70,7 @@ async function newFeedback(req, res) {
 				user_id_fk: user.user_id,
 			},
 		});
+		return res.redirect("/tenant-feedback");
 	} catch (err) {
 		console.log(err);
 		if (err.name === "TokenExpiredError") {
@@ -79,7 +86,6 @@ async function newFeedback(req, res) {
 
 router.post("/", async function (req, res, next) {
 	await newFeedback(req, res);
-	return res.redirect("/tenant-feedback");
 });
 
 router.get("/", function (req, res, next) {
