@@ -25,7 +25,7 @@ async function viewFeedback(req, res) {
 
 	try {
 		const decoded = jwt.verify(existingToken, process.env.JWT_SECRET);
-
+		console.log(decoded);
 		if (!decoded) {
 			console.log("user's token has expired.");
 			return res.redirect("/login");
@@ -57,7 +57,8 @@ async function viewFeedback(req, res) {
 			},
 		});
 
-		feedback.property_fk = property.unit + " " + property.street + ", " + property.city;
+		feedback.property_fk =
+			property.unit + " " + property.street + ", " + property.city;
 
 		switch (feedback.category) {
 			case 1:
