@@ -1,27 +1,27 @@
-var express = require('express');
-var router = express.Router();
-const { PrismaClient } = require("@prisma/client");
+const express = require('express');
+const router = express.Router();
+const {PrismaClient} = require('@prisma/client');
 const prisma = new PrismaClient();
-const jwt = require('jsonwebtoken')
+const jwt = require('jsonwebtoken');
 function verifyLandlord(req, res, next) {
   const token = req.cookies.jwt;
   if (!token) {
-    return res.status(401).send("Access Denied / No token provided");
+    return res.status(401).send('Access Denied / No token provided');
   }
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     if (decoded.role !== 1) {
-      return res.status(403).send("Access Denied / Not a landlord");
+      return res.status(403).send('Access Denied / Not a landlord');
     }
     req.user = decoded;
     next();
   } catch (error) {
-    res.status(400).send("Invalid token");
+    res.status(400).send('Invalid token');
   }
 }
 router.get('/', verifyLandlord, function(req, res, next) {
-  res.render('add_property', { title: 'Landlord Dashboard - Add property' });
+  res.render('add_property', {title: 'Landlord Dashboard - Add property'});
 });
 
 // Create a new property
@@ -35,10 +35,10 @@ router.post('/', verifyLandlord, async (req, res) => {
     const currentUserId = req.user.user_id;
 
     // parseInt unit number
-    let unitString = req.body.unit;
-    let unit = parseInt(unitString);
+    const unitString = req.body.unit;
+    const unit = parseInt(unitString);
 
-    const { street, city, province_state, country} = req.body;
+    const {street, city, province_state, country} = req.body;
     // Create a new property
     newProperty = await prisma.properties.create({
       data: {
@@ -47,15 +47,14 @@ router.post('/', verifyLandlord, async (req, res) => {
         city: city,
         province_state: province_state,
         country: country,
-        user_id: currentUserId
+        user_id: currentUserId,
       },
     });
 
-    return res.redirect('/landlord-properties')
-
+    return res.redirect('/landlord-properties');
   } catch (error) {
     console.error(error);
-    return res.status(500).send("An error occurred while creating the property");
+    return res.status(500).send('An error occurred while creating the property');
   }
 });
 

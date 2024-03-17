@@ -1,11 +1,11 @@
-var express = require('express');
-var router = express.Router();
-const { PrismaClient } = require('@prisma/client');
+const express = require('express');
+const router = express.Router();
+const {PrismaClient} = require('@prisma/client');
 const prisma = new PrismaClient();
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'RentEase Test' });
+  res.render('index', {title: 'RentEase Test'});
 });
 
 const userData = {
@@ -13,7 +13,7 @@ const userData = {
   last_name: 'Doe',
   password: 'hashedPassword',
   email: 'test@email.com', // You should hash the password before storing it
-  role: 2
+  role: 2,
   // Other user properties as needed
 };
 

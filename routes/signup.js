@@ -89,7 +89,7 @@ router.post('/', async function (req, res, next) {
     });
 
     return res.redirect('/login?message=success');
-  } catch(err) {
+  } catch (err) {
     console.log(err);
   } finally {
     prisma.$disconnect();
