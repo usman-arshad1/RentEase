@@ -44,48 +44,48 @@ async function newFeedback(req, res) {
       },
     });
 
-		console.log(user);
+    console.log(user);
 
-		if (Object.is(user.property_fk, null)) {
-			return res.redirect("/tenant-feedback");
-		}
+    if (Object.is(user.property_fk, null)) {
+      return res.redirect('/tenant-feedback');
+    }
 
-		let property = await prisma.properties.findUnique({
-			where: {
-				property_id: user.property_fk,
-			},
-		});
+    const property = await prisma.properties.findUnique({
+      where: {
+        property_id: user.property_fk,
+      },
+    });
 
     const curr_date = getDate();
     // console.log(curr_date); // "29-02-2024"
 
-		await prisma.feedback.create({
-			data: {
-				title: title,
-				category: parseInt(category),
-				description: description,
-				date: curr_date,
-				status: 1,
-				property_fk: user.property_fk,
-				user_id_fk: user.user_id,
-			},
-		});
-		return res.redirect("/tenant-feedback");
-	} catch (err) {
-		console.log(err);
-		if (err.name === "TokenExpiredError") {
-			return res.redirect("/login");
-		} else {
-			console.error(err);
-			return res.status(500).json({ error: "Internal server error" });
-		}
-	} finally {
-		prisma.$disconnect();
-	}
+    await prisma.feedback.create({
+      data: {
+        title: title,
+        category: parseInt(category),
+        description: description,
+        date: curr_date,
+        status: 1,
+        property_fk: user.property_fk,
+        user_id_fk: user.user_id,
+      },
+    });
+    return res.redirect('/tenant-feedback');
+  } catch (err) {
+    console.log(err);
+    if (err.name === 'TokenExpiredError') {
+      return res.redirect('/login');
+    } else {
+      console.error(err);
+      return res.status(500).json({error: 'Internal server error'});
+    }
+  } finally {
+    prisma.$disconnect();
+  }
 }
 
-router.post("/", async function (req, res, next) {
-	await newFeedback(req, res);
+router.post('/', async function(req, res, next) {
+  await newFeedback(req, res);
 });
 
 router.get('/', function(req, res, next) {

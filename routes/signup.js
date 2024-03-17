@@ -1,14 +1,14 @@
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');
-const { PrismaClient } = require('@prisma/client');
+const {PrismaClient} = require('@prisma/client');
 const prisma = new PrismaClient();
 
 async function existingEmail(email) {
   const existingUser = await prisma.user.findUnique({
     where: {
-      email: email
-    }
+      email: email,
+    },
   });
 
   if (existingUser) {
@@ -63,13 +63,13 @@ async function hashPassword(password) {
   }
 }
 
-router.get('/', function (req, res, next) {
+router.get('/', function(req, res, next) {
   const errorMsgs = req.flash('errors')[0] || {};
-  res.render('signup', { errorMsgs });
+  res.render('signup', {errorMsgs});
 });
 
-router.post('/', async function (req, res, next) {
-  const { fname, lname, email, password, role } = req.body;
+router.post('/', async function(req, res, next) {
+  const {fname, lname, email, password, role} = req.body;
   const resData = await validateInput(fname, lname, email, password, role);
 
   if (Object.keys(resData).length > 0) {
@@ -84,8 +84,8 @@ router.post('/', async function (req, res, next) {
         last_name: lname,
         email: email,
         password: await hashPassword(password),
-        role: role === 'landlord' ? 1 : 2
-      }
+        role: role === 'landlord' ? 1 : 2,
+      },
     });
 
     return res.redirect('/login?message=success');
