@@ -14,10 +14,10 @@
 // ***********************************************************
 
 // Import commands.js using ES2015 syntax:
-import './commands'
+require('./commands');
 
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
 
 // cypress/support/e2e.js
-import '@cypress/code-coverage/support'
+require('@cypress/code-coverage/support');

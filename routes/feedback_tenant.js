@@ -1,97 +1,121 @@
-var express = require("express");
-var router = express.Router();
-const { PrismaClient } = require("@prisma/client");
+const express = require('express');
+const router = express.Router();
+const {PrismaClient} = require('@prisma/client');
 const prisma = new PrismaClient();
-const jwt = require("jsonwebtoken");
-const { forEach } = require("async");
+const jwt = require('jsonwebtoken');
 
 async function getFeedback(req, res) {
-	const existingToken = req.cookies.jwt;
+  const existingToken = req.cookies.jwt;
 
-	if (!existingToken) {
-		console.log("user is not signed in.");
-		return res.redirect("/login");
-	}
+  if (!existingToken) {
+    console.log('user is not signed in.');
+    return res.redirect('/login');
+  }
 
-	try {
-		const decoded = jwt.verify(existingToken, process.env.JWT_SECRET);
+  try {
+    const decoded = jwt.verify(existingToken, process.env.JWT_SECRET);
 
-		if (!decoded) {
-			console.log("user's token has expired.");
-			return res.redirect("/login");
-		}
-		let results = [];
+    if (!decoded) {
+      console.log('user\'s token has expired.');
+      return res.redirect('/login');
+    }
 
-		const user = await prisma.user.findUnique({
-			where: {
-				email: decoded.email,
-			},
-		});
+    if (decoded.role == 1) {
+      return res.redirect('/landlord-feedback');
+    }
 
-		let username = user.first_name + " " + user.last_name;
+    const results = [];
 
-		const feedback = await prisma.feedback.findMany({
-			where: {
-				user_id_fk: user.user_id,
-			},
-			include: {
-				user: true,
-			},
-		});
+    const user = await prisma.user.findUnique({
+      where: {
+        email: decoded.email,
+      },
+    });
 
-		console.log(feedback);
-		if (feedback.length > 0) {
-			if (feedback.feedback_id === null) {
-				return res.render("feedback_tenant", { results: results });
-			}
+    const username = user.first_name + ' ' + user.last_name;
 
-			const property = await prisma.properties.findMany({
-				where: {
-					property_id: feedback.property_fk,
-				},
-				include: {
-					feedback: true,
-				},
-			});
+    const feedback = await prisma.feedback.findMany({
+      where: {
+        user_id_fk: user.user_id,
+      },
+      include: {
+        user: true,
+      },
+    });
 
-			// console.log(property);
+    console.log('feedback length ' + feedback.length);
 
-			property.forEach((unit) => {
-				if (unit.feedback.length > 0) {
-					// console.log(unit);
-					// console.log(unit.feedback);
-					results.push(unit);
-				}
-			});
+    if (feedback.length == 0) {
+      return res.render('feedback_tenant', {results: results});
+    }
 
-			results.forEach((feedback) => {
-				console.log(feedback);
-			});
-		}
-		if (decoded.role == 2) {
-			res.render("feedback_tenant", {
-				title: "Tenant Feedback",
-				results: results,
-				username: username,
-			});
-		} else if (decoded.role == 1) {
-			return res.redirect("/landlord-feedback");
-		}
-	} catch (err) {
-		console.log(err);
-		if (err.name === "TokenExpiredError") {
-			return res.redirect("/login");
-		} else {
-			console.error(err);
-			return res.status(500).json({ error: "Internal server error" });
-		}
-	} finally {
-		prisma.$disconnect();
-	}
+    for (let i = 0; i < feedback.length; i++) {
+      const property = await prisma.properties.findUnique({
+        where: {
+          property_id: feedback[i].property_fk,
+        },
+      });
+      switch (feedback[i].category) {
+        case 1:
+          feedback[i].category = 'Structural';
+          break;
+        case 2:
+          feedback[i].category = 'Safety';
+          break;
+        case 3:
+          feedback[i].category = 'Cosmetic';
+          break;
+        case 4:
+          feedback[i].category = 'Applicance';
+          break;
+        case 5:
+          feedback[i].category = 'Other';
+          break;
+      }
+      switch (feedback[i].status) {
+        case 1:
+          feedback[i].status = 'Received';
+          break;
+        case 2:
+          feedback[i].status = 'In-Progress';
+          break;
+        case 3:
+          feedback[i].status = 'Completed';
+          break;
+      }
+
+      feedback[i].property_fk =
+        property.unit + ' ' + property.street + ', ' + property.city;
+      results.push(feedback[i]);
+      console.log('results length: ' + results.length);
+      // console.log(defect);
+    }
+
+    console.log(results);
+
+    if (decoded.role == 2) {
+      res.render('feedback_tenant', {
+        title: 'Tenant Feedback',
+        results: results,
+        username: username,
+      });
+    }
+  } catch (err) {
+    console.log(err);
+    if (err.name === 'TokenExpiredError') {
+      return res.redirect('/login');
+    } else {
+      console.error(err);
+      return res.status(500).json({error: 'Internal server error'});
+    }
+  } finally {
+    prisma.$disconnect();
+  }
 }
 
-router.get("/", async function (req, res, next) {
-	await getFeedback(req, res);
+router.get('/', async function(req, res, next) {
+  await getFeedback(req, res);
 });
+
 
 module.exports = router;

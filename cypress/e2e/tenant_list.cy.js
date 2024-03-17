@@ -1,10 +1,10 @@
-/// <reference types="cypress" />
+// / <reference types="cypress" />
 
 describe('landlord tenant list page', () => {
   beforeEach(() => {
     cy.visit('http://localhost:8080/login');
-    cy.get('[data-cy="email-input"]').type('bo@horvat.com', { delay: 100 });
-    cy.get('[data-cy="password-input"]').type('islanders123', { delay: 100 });
+    cy.get('[data-cy="email-input"]').type('bo@horvat.com', {delay: 100});
+    cy.get('[data-cy="password-input"]').type('islanders123', {delay: 100});
     cy.get('[data-cy="login-form"]').submit();
     cy.visit('http://localhost:8080/landlord-tenant-list');
   });
@@ -23,7 +23,7 @@ describe('landlord tenant list page', () => {
     cy.get('[data-bs-target="#invite-modal"]').click();
     cy.wait(1000);
     cy.get('[data-cy="email-input"]').type('renteaseproject@gmail.com', {delay: 100});
-    cy.get('[data-cy="submit-button"]').click()
+    cy.get('[data-cy="submit-button"]').click();
     cy.get('[data-cy="email-sent-valid"]').should('be.visible').contains('Successfully sent the email invitation!');
   });
 
@@ -31,7 +31,7 @@ describe('landlord tenant list page', () => {
     cy.get('[data-cy="email-input"]').invoke('removeAttr', 'required');
     cy.get('[data-bs-target="#invite-modal"]').click();
     cy.wait(1000);
-    cy.get('[data-cy="submit-button"]').click()
+    cy.get('[data-cy="submit-button"]').click();
     cy.get('[data-cy="email-invalid"]').should('be.visible').contains('Enter an email');
   });
 
@@ -39,8 +39,8 @@ describe('landlord tenant list page', () => {
     cy.get('[data-cy="email-input"]').invoke('removeAttr', 'maxlength');
     cy.get('[data-bs-target="#invite-modal"]').click();
     cy.wait(1000);
-    cy.get('[data-cy="email-input"]').type('Testnametestnametestnametestnametestnametestnametestnametestnametestnametestnametestnametestnametestnametestnametestnametestnametestnametestnametestname@testname.com', { delay: 25 });
-    cy.get('[data-cy="submit-button"]').click()
+    cy.get('[data-cy="email-input"]').type('Testnametestnametestnametestnametestnametestnametestnametestnametestnametestnametestnametestnametestnametestnametestnametestnametestnametestnametestname@testname.com', {delay: 25});
+    cy.get('[data-cy="submit-button"]').click();
     cy.get('[data-cy="email-invalid"]').should('be.visible').contains('Enter an email up to 150 characters');
   });
 
@@ -48,8 +48,7 @@ describe('landlord tenant list page', () => {
     cy.get('[data-bs-target="#invite-modal"]').click();
     cy.wait(1000);
     cy.get('[data-cy="email-input"]').type('elias@petey.com');
-    cy.get('[data-cy="submit-button"]').click()
+    cy.get('[data-cy="submit-button"]').click();
     cy.get('[data-cy="email-invalid"]').should('be.visible').contains('Tenant is already assigned to a property');
   });
-
 });

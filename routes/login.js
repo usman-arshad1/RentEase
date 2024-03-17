@@ -1,112 +1,106 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
-const { PrismaClient } = require("@prisma/client");
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const {PrismaClient} = require('@prisma/client');
 const prisma = new PrismaClient();
-const getAnnouncements = require("./announcement_tenant");
-// const getProperties = require("./property");
 
 function generateJWT(user_id, email, role) {
-	return jwt.sign({ user_id, email, role }, process.env.JWT_SECRET, {
-		expiresIn: "1h",
-	});
+  return jwt.sign({user_id, email, role}, process.env.JWT_SECRET, {
+    expiresIn: '1h',
+  });
 }
 
 async function registeredUser(email) {
-	const existingUser = await prisma.user.findUnique({
-		where: {
-			email: email
-		}
-	});
+  const existingUser = await prisma.user.findUnique({
+    where: {
+      email: email,
+    },
+  });
 
-	if (existingUser) {
-		return existingUser;
-	}
 
-	return 'not-registered';
+  if (existingUser) {
+    return existingUser;
+  }
+
+  return 'not-registered';
 }
 
 async function validateInput(email, password) {
-	const resData = {};
+  const resData = {};
 
-	if (!email) {
-		resData["emailInvalid"] = "Enter an email";
-		return resData;
-	} else if (email.length > 150) {
-		resData["emailInvalid"] = "Enter an email up to 150 characters";
-		return resData;
-	}
+  if (!email) {
+    resData['emailInvalid'] = 'Enter an email';
+    return resData;
+  } else if (email.length > 150) {
+    resData['emailInvalid'] = 'Enter an email up to 150 characters';
+    return resData;
+  }
 
-	const result = await registeredUser(email);
+  const result = await registeredUser(email);
 
-	if (result === 'not-registered') {
-		resData["emailInvalid"] = `Email is not registered`;
-		return resData;
-	}
+  if (result === 'not-registered') {
+    resData['emailInvalid'] = `Email is not registered`;
+    return resData;
+  }
 
-	if (!password) {
-		resData["passwordInvalid"] = "Enter a password";
-	} else if (await bcrypt.compare(password, result.password) === false) {
-		resData["passwordInvalid"] = "Incorrect password";
-	}
+  if (!password) {
+    resData['passwordInvalid'] = 'Enter a password';
+  } else if (await bcrypt.compare(password, result.password) === false) {
+    resData['passwordInvalid'] = 'Incorrect password';
+  }
 
-	return resData;
+  return resData;
 }
 
-router.get("/", function (req, res, next) {
-	let successMsg = "";
 
-	if (req.url.includes("success")) {
-		successMsg = 'Account successfully created!';
-	}
+router.get('/', function(req, res, next) {
+  let successMsg = '';
 
-	const errorMsgs = req.flash('errors')[0] || {};
+  if (req.url.includes('success')) {
+    successMsg = 'Account successfully created!';
+  }
 
-	res.render("login", { errorMsgs, successMsg });
+  const errorMsgs = req.flash('errors')[0] || {};
+
+  res.render('login', {errorMsgs, successMsg});
 });
 
-router.post("/", async function (req, res, next) {
-	const { email, password } = req.body;
-	const resData = await validateInput(email, password);
+router.post('/', async function(req, res, next) {
+  const {email, password} = req.body;
+  const resData = await validateInput(email, password);
 
-	if (Object.keys(resData).length > 0) {
-		req.flash('errors', resData);
-		return res.redirect('/login');
-	}
+  if (Object.keys(resData).length > 0) {
+    req.flash('errors', resData);
+    return res.redirect('/login');
+  }
 
-	try {
-		const existingUser = await registeredUser(email);
+  try {
+    const existingUser = await registeredUser(email);
 
-		const token = generateJWT(
-			existingUser.user_id,
-			existingUser.email,
-			existingUser.role
-		);
+    const token = generateJWT(
+        existingUser.user_id,
+        existingUser.email,
+        existingUser.role,
+    );
 
-		res.cookie("jwt", token, {
-			maxAge: 3600000,
-			httpOnly: true,
-			sameSite: "none",
-			secure: true,
-		});
+    res.cookie('jwt', token, {
+      maxAge: 3600000,
+      httpOnly: true,
+      sameSite: 'none',
+      secure: true,
+    });
 
-		if (existingUser.role === 1) {
-			var properties = await prisma.properties.findMany({
-				where: {
-					user_id: existingUser.user_id,
-				},
-			});
-			return res.render("property", { properties });
-		} else {
-			var properties = await getAnnouncements(req, res);
-			return res.render("announcement_tenant", { properties });
-		}
-	} catch (err) {
-		console.log(err);
-	} finally {
-		prisma.$disconnect();
-	}
+    if (existingUser.role === 1) {
+      return res.redirect('/landlord-properties');
+    } else {
+      return res.redirect('/tenant-announcements');
+    }
+  } catch (err) {
+    console.log(err);
+  } finally {
+    prisma.$disconnect();
+  }
 });
 
 

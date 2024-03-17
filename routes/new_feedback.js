@@ -1,107 +1,95 @@
-var express = require("express");
-var router = express.Router();
-const { PrismaClient } = require("@prisma/client");
+const express = require('express');
+const router = express.Router();
+const {PrismaClient} = require('@prisma/client');
 const prisma = new PrismaClient();
-const jwt = require("jsonwebtoken");
-const { forEach } = require("async");
+const jwt = require('jsonwebtoken');
+const {forEach} = require('async');
 
-async function newFeedback(req, res) {
-	const existingToken = req.cookies.jwt;
+function getDate() {
+  const date = new Date();
 
-	console.log(req.body);
+  const day = date.getDate();
+  const month = date.getMonth() + 1;
+  const year = date.getFullYear();
 
-	if (!existingToken) {
-		console.log("user is not signed in.");
-		return res.redirect("/login");
-	}
-
-	try {
-		const decoded = jwt.verify(existingToken, process.env.JWT_SECRET);
-
-		if (!decoded) {
-			console.log("user's token has expired.");
-			return res.redirect("/login");
-		}
-		let results = [];
-
-		const user = await prisma.user.findUnique({
-			where: {
-				email: decoded.email,
-			},
-		});
-
-		let username = user.first_name + " " + user.last_name;
-
-		return res.redirect("/tenant_feedback");
-
-		// 	const feedback = await prisma.feedback.findMany({
-		// 		where: {
-		// 			user_id_fk: user.user_id,
-		// 		},
-		// 		include: {
-		// 			user: true,
-		// 		},
-		// 	});
-
-		// 	console.log(feedback);
-
-		// 	if (feedback.feedback_id === null) {
-		// 		return res.render("feedback_tenant", { results: results });
-		// 	}
-
-		// 	const property = await prisma.properties.findMany({
-		// 		where: {
-		// 			property_id: feedback.property_fk,
-		// 		},
-		// 		include: {
-		// 			feedback: true,
-		// 		},
-		// 	});
-
-		// 	// console.log(property);
-
-		// 	property.forEach((unit) => {
-		// 		if (unit.feedback.length > 0) {
-		// 			// console.log(unit);
-		// 			// console.log(unit.feedback);
-		// 			results.push(unit);
-		// 		}
-		// 	});
-
-		// 	results.forEach((feedback) => {
-		// 		console.log(feedback);
-		// 	});
-
-		// 	if (decoded.role == 1) {
-		// 		res.render("feedback_tenant", {
-		// 			title: "Tenant Feedback",
-		// 			results: results,
-		// 			username: username,
-		// 		});
-		// 	} else if (decoded.role == 2) {
-		// 		return res.redirect("/landlord-feedback");
-		// 	}
-	} catch (err) {
-		console.log(err);
-		if (err.name === "TokenExpiredError") {
-			return res.redirect("/login");
-		} else {
-			console.error(err);
-			return res.status(500).json({ error: "Internal server error" });
-		}
-	} finally {
-		prisma.$disconnect();
-	}
+  return `${day}-${month}-${year}`;
+  // console.log(curr_date); // "29-02-2024"
 }
 
-router.post("/", async function (req, res, next) {
-	// await newFeedback(req, res);
-	console.log(req.body);
-	res.redirect("/tenant-feedback");
+async function newFeedback(req, res) {
+  const existingToken = req.cookies.jwt;
+  const {title, category, description} = req.body;
+
+  // console.log(title);
+  // console.log(category);
+  // console.log(description);
+
+  if (!existingToken) {
+    console.log('user is not signed in.');
+    return res.redirect('/login');
+  }
+
+  try {
+    const decoded = jwt.verify(existingToken, process.env.JWT_SECRET);
+
+    if (!decoded) {
+      console.log('user\'s token has expired.');
+      return res.redirect('/login');
+    }
+    const results = [];
+
+    const user = await prisma.user.findUnique({
+      where: {
+        email: decoded.email,
+      },
+    });
+
+    console.log(user);
+
+    if (Object.is(user.property_fk, null)) {
+      return res.redirect('/tenant-feedback');
+    }
+
+    const property = await prisma.properties.findUnique({
+      where: {
+        property_id: user.property_fk,
+      },
+    });
+
+    const curr_date = getDate();
+    // console.log(curr_date); // "29-02-2024"
+
+    await prisma.feedback.create({
+      data: {
+        title: title,
+        category: parseInt(category),
+        description: description,
+        date: curr_date,
+        status: 1,
+        property_fk: user.property_fk,
+        user_id_fk: user.user_id,
+      },
+    });
+    return res.redirect('/tenant-feedback');
+  } catch (err) {
+    console.log(err);
+    if (err.name === 'TokenExpiredError') {
+      return res.redirect('/login');
+    } else {
+      console.error(err);
+      return res.status(500).json({error: 'Internal server error'});
+    }
+  } finally {
+    prisma.$disconnect();
+  }
+}
+
+router.post('/', async function(req, res, next) {
+  await newFeedback(req, res);
 });
 
-router.get("/", function (req, res, next) {
-	res.render("new_feedback", { title: "Tenant New Feedback" });
+router.get('/', function(req, res, next) {
+  res.render('new_feedback', {title: 'Tenant New Feedback'});
 });
 
 module.exports = router;

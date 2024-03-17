@@ -12,6 +12,7 @@ model feedback {
   title                          String     @db.VarChar(200)
   category                       Int
   description                    String     @db.VarChar(1000)
+  update                         String?    @db.VarChar(1000)
   date                           String     @db.VarChar(45)
   status                         Int        @default(1)
   property_fk                    Int

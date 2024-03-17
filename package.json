@@ -106,6 +106,8 @@
     "@cypress/code-coverage": "^3.12.29",
     "babel-plugin-istanbul": "^6.1.1",
     "cypress": "^13.6.6",
+    "eslint": "^8.57.0",
+    "eslint-config-google": "^0.14.0",
     "nyc": "^15.1.0"
   }
 }
