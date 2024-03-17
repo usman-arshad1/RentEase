@@ -33,6 +33,12 @@ var addPropertyRouter = require("./routes/add_property");
 
 var app = express();
 
+if (global.__coverage__) {
+    console.log('have code coverage, will add middleware for express')
+    console.log(`to fetch: GET :${port}/__coverage__`)
+    require('@cypress/code-coverage/middleware/express')(app)
+}
+
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");

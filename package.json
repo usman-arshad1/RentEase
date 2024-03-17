@@ -103,6 +103,9 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "cypress": "^13.6.6"
+    "@cypress/code-coverage": "^3.12.29",
+    "babel-plugin-istanbul": "^6.1.1",
+    "cypress": "^13.6.6",
+    "nyc": "^15.1.0"
   }
 }

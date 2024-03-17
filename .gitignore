@@ -1,4 +1,8 @@
 /node_modules
 .env
 /prisma/create-tables.sql
+cypress/downloads
+cypress/screenshots
+/coverage
+/.nyc_output
 
