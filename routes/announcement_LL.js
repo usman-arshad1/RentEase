@@ -4,6 +4,20 @@ const { PrismaClient } = require('@prisma/client');
 const jwt = require('jsonwebtoken');
 const prisma = new PrismaClient();
 
+
+async function validateAnnouncement(announcement) {
+	const resData = {};
+
+	if (!announcement) {
+		resData['announcementInvalid'] = 'Enter an announcement';
+	} else if (announcement.length > 500) {
+		resData['announcementInvalid'] = 'Enter an announcement up to 500 characters';
+	}
+
+	return resData;
+}
+
+
 /**
  * Get the announcements for the tenant
  * @param {*} req  The request object
@@ -82,6 +96,13 @@ async function submitAnnouncement(req, res) {
 
 			const { property_id, announcement } = req.body;
 			const propertyIdInt = parseInt(property_id);
+
+			const announcementErrors = await validateAnnouncement(announcement);
+
+			if (Object.keys(announcementErrors).length > 0) {
+					req.flash('messages', announcementErrors);
+					return res.redirect('/landlord-announcements');
+			}
 
 			const newAnnouncement = await prisma.announcements.create({
 					data: {

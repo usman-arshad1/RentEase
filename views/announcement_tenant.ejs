@@ -17,7 +17,7 @@
             <tbody>
                 <% properties.forEach(property => { %>
                     <% property.announcements.forEach(announcement => { %>
-                    <tr>
+                    <tr data-cy="announcement-view">
                         <td><%= `${property.unit} ${property.street}, ${property.city}` %></td>
                         <td><%= announcement.announcement %></td>
                     </tr>
