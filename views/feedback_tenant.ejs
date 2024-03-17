@@ -10,6 +10,7 @@
                 <th>Category</th>
                 <th>Date</th>
                 <th>Status</th>
+                <th>View</th>
             </tr>
         </thead>
         <tbody>
@@ -17,7 +18,6 @@
             <% for (i = 0; i < results.length; i++) { %>
                 <%- include('templates/tenant_feedback_row', {results: results[i], username: username})  %> 
             <% } %>
-                
         </tbody>
         <tfoot>
             <tr>
@@ -31,10 +31,5 @@
         </tfoot>
     </table>
 </div>
-
-
-
-
-
 
 <%- include("templates/footer_feedback_tenant") %>

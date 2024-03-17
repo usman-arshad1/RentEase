@@ -18,9 +18,10 @@ async function registeredUser(email) {
     },
   });
 
-  if (existingUser) {
-    return existingUser;
-  }
+
+	if (existingUser) {
+		return existingUser;
+	}
 
   return 'not-registered';
 }
@@ -52,8 +53,9 @@ async function validateInput(email, password) {
   return resData;
 }
 
-router.get('/', function(req, res, next) {
-  let successMsg = '';
+
+router.get("/", function (req, res, next) {
+	let successMsg = "";
 
   if (req.url.includes('success')) {
     successMsg = 'Account successfully created!';
