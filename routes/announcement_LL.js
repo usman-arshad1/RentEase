@@ -17,7 +17,6 @@ async function getAnnouncements(req, res) {
 		return res.redirect('/login');
 	}
 
-	
 	try {
 		const decoded = jwt.verify(existingToken, process.env.JWT_SECRET);
 
@@ -35,7 +34,7 @@ async function getAnnouncements(req, res) {
 			where: {
 				user_id: user.user_id
 			},
-			include: { 
+			include: {
 				announcements: true
 			}
 		});
@@ -60,60 +59,111 @@ async function getAnnouncements(req, res) {
  * @returns  The updated list of properties
  */
 async function submitAnnouncement(req, res) {
-	const { property_id, announcement } = req.body;
-	const propertyIdInt = parseInt(property_id);
+	const existingToken = req.cookies.jwt;
 
-	const newAnnouncement = await prisma.announcements.create({
-		data: {
-			announcement: announcement,
-			property: propertyIdInt
-		}
-	});
-	if (!newAnnouncement) {
-		return res.status(400).json({ error: 'Failed to submit announcement' });
+	if (!existingToken) {
+		return res.redirect('/login');
 	}
-	// Update the property to include the announcement
-	const updatedProperty = await prisma.properties.update({
-		where: {
-			property_id: propertyIdInt
-		},
-		data: {
-			announcements: {
-				connect: {
-					announcement_id: newAnnouncement.announcement_id
+
+	try {
+		const decoded = jwt.verify(existingToken, process.env.JWT_SECRET);
+
+		const user = await prisma.user.findUnique({
+			where: {
+				user_id: decoded.user_id
+			}
+		});
+
+		if (!user) {
+			return res.status(400).json({ error: 'User not found' });
+		}
+
+		const { property_id, announcement } = req.body;
+		const propertyIdInt = parseInt(property_id);
+
+		const newAnnouncement = await prisma.announcements.create({
+			data: {
+				announcement: announcement,
+				property: propertyIdInt
+			}
+		});
+		if (!newAnnouncement) {
+			return res.status(400).json({ error: 'Failed to submit announcement' });
+		}
+		// // Update the property to include the announcement
+		const updatedProperty = await prisma.properties.update({
+			where: {
+				property_id: propertyIdInt
+			},
+			data: {
+				announcements: {
+					connect: {
+						announcement_id: newAnnouncement.announcement_id
+					}
 				}
 			}
+		});
+		if (!updatedProperty) {
+			return res.status(400).json({ error: 'Failed to update property' });
+		} else {
+			res.redirect('/landlord-announcements');
 		}
-	});
-	if (!updatedProperty) {
-		return res.status(400).json({ error: 'Failed to update property' });
 	}
-	// Get the updated list of properties
-	const properties = await getAnnouncements(req, res);
-	res.render('announcement_LL', { properties });
+	catch (err) {
+		if (err.name === 'TokenExpiredError') {
+			return res.redirect('/login');
+		}
+	}
 }
 
 async function removeAnnouncement(req, res) {
-	const { announcement_id } = req.body;
-	const announcementIdInt = parseInt(announcement_id);
-	// Find the announcement to be removed
-	const announcementToRemove = await prisma.announcements.findUnique({
-		where: {
-			announcement_id: announcementIdInt
-		}
-	});
-	if (!announcementToRemove) {
-		return res.status(400).json({ error: 'Announcement not found' });
+	const existingToken = req.cookies.jwt;
+
+	if (!existingToken) {
+		return res.redirect('/login');
 	}
-	// Remove the announcement
-	await prisma.announcements.delete({
-		where: {
-			announcement_id: announcementIdInt
+
+	try {
+		const decoded = jwt.verify(existingToken, process.env.JWT_SECRET);
+
+		const user = await prisma.user.findUnique({
+			where: {
+				user_id: decoded.user_id
+			}
+		});
+
+		if (!user) {
+			return res.status(400).json({ error: 'User not found' });
 		}
-	});
-	// Get the updated list of properties
-	const properties = await getAnnouncements(req, res);
-	res.render('announcement_LL', { properties });
+
+		const { announcement_id } = req.body;
+		const announcementIdInt = parseInt(announcement_id);
+		// Find the announcement to be removed
+		const announcementToRemove = await prisma.announcements.findUnique({
+			where: {
+				announcement_id: announcementIdInt
+			}
+		});
+		if (!announcementToRemove) {
+			return res.status(400).json({ error: 'Announcement not found' });
+		}
+		// Remove the announcement
+		
+		await prisma.announcements.delete({
+			where: {
+				announcement_id: announcementIdInt
+			}
+		});
+		// Get the updated list of properties
+		// const properties = await getAnnouncements(req, res);
+		// return res.render('announcement_LL', { properties });
+		res.redirect('/landlord-announcements');
+	} catch (err) {
+		if (err.name === 'TokenExpiredError') {
+			return res.redirect('/login');
+		}
+		return res.status(500).json({ error: 'Internal server error' });
+	}
 }
 
 

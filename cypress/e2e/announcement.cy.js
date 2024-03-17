@@ -14,8 +14,11 @@ describe('announcement', () => {
         cy.get('[data-cy="announcement-button"]').click();
         cy.get('[id="announcementContent"]').type('This is a test announcement', {delay: 2});
         cy.get('[data-cy="announcement-create"]').click();
-
     })
+
+    // it('delete announcement', () => {
+    //     cy.get('[data-cy="delete-announcement"]').click();
+    //     cy.get
 
     
 })
