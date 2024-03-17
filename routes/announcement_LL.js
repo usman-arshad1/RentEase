@@ -10,7 +10,6 @@ const prisma = new PrismaClient();
  * @param {*} res  The response object
  * @returns  The announcements for the tenant
  */
-
 async function getAnnouncements(req, res) {
 	const existingToken = req.cookies.jwt;
 
@@ -18,6 +17,7 @@ async function getAnnouncements(req, res) {
 		return res.redirect('/login');
 	}
 
+	
 	try {
 		const decoded = jwt.verify(existingToken, process.env.JWT_SECRET);
 
@@ -35,7 +35,7 @@ async function getAnnouncements(req, res) {
 			where: {
 				user_id: user.user_id
 			},
-			include: {
+			include: { 
 				announcements: true
 			}
 		});
@@ -53,7 +53,6 @@ async function getAnnouncements(req, res) {
 
 }
 
-
 /**
  * Submit an announcement
  * @param {*} req  The request object
@@ -61,9 +60,9 @@ async function getAnnouncements(req, res) {
  * @returns  The updated list of properties
  */
 async function submitAnnouncement(req, res) {
-	//TODO Validate that the user did provide an announcement. If not, return a message to the user
 	const { property_id, announcement } = req.body;
 	const propertyIdInt = parseInt(property_id);
+
 	const newAnnouncement = await prisma.announcements.create({
 		data: {
 			announcement: announcement,
@@ -116,7 +115,6 @@ async function removeAnnouncement(req, res) {
 	const properties = await getAnnouncements(req, res);
 	res.render('announcement_LL', { properties });
 }
-
 
 
 router.post("/", async function (req, res, next) {

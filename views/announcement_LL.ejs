@@ -1,47 +1,52 @@
 <%- include("templates/header_LL") %>
 
-<br>
-<br>
 <div class="container">
     <br>
     <h1>Announcements</h1>
-    <div class="spacer">
-        <ul class="list-group">
-            <% properties.forEach(property => { %>
-            <li class="list-group-item">
-                <div class="d-flex justify-content-between align-items-center">
-                    <span><%= `${property.unit} ${property.street}, ${property.city}` %></span>
-                    <% if (property.announcements && property.announcements.length > 0) { %>
-                    <span class="badge badge-primary badge-pill"><%= property.announcements.length %></span>
+    <div class="p-5">
+        <table id="announcement_table" class="table table-striped" style="width:100%">
+            <thead>
+                <tr>
+                    <th>Property</th>
+                    <th>Announcement</th>
+                    
+                </tr>
+            </thead>
+            <tbody>
+                <% properties.forEach(property => { %>
+                    <% if (property.announcements && property.announcements.length > 0) { 
+                        property.announcements.forEach(announcement => { %>
+                        <tr>
+                            <td><%= `${property.unit} ${property.street}, ${property.city}` %></td>
+                            <td class="d-flex justify-content-between align-items-center">
+                                <span><%= announcement.announcement %></span>
+                                <form method="POST" action="/landlord-announcements" style="display: inline;">
+                                    <input type="hidden" name="announcement_id" value="<%= announcement.announcement_id %>">
+                                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                </form>
+                            </td>
+                            
+                        </tr>
+                        <% }); 
+                    } else { %>
+                        <tr>
+                            <td><%= `${property.unit} ${property.street}, ${property.city}` %></td>
+                            <td>No announcements for this property.</td>
+                        </tr>
                     <% } %>
-                </div>
-                <% if (property.announcements && property.announcements.length > 0) { %>
-                <ul class="list-group mt-2">
-                    <% property.announcements.forEach(announcement => { %>
-                    <li class="list-group-item">
-                        <strong><%= announcement.announcement %></strong>
-                        <form method="POST" action="/landlord-announcements" style="display: inline;">
-                            <input type="hidden" name="announcement_id" value="<%= announcement.announcement_id %>">
-                            <button type="submit" class="btn btn-danger btn-sm ml-2">Delete</button>
-                        </form>
-                    </li>
-                    <% }); %>
-                </ul>
-                <% } else { %>
-                <p>No announcements for this property.</p>
-                <% } %>
-            </li>
-            <% }); %>
-        </ul>
+                <% }); %>
+            </tbody>
+        </table>
 
         <div class="text-center mt-4">
             <button type="button" class="btn btn-primary" data-toggle="modal" data-cy="announcement-button" data-target="#exampleModal">
                 New Announcement
             </button>
         </div>
-        
     </div>
+    <br>
 </div>
+
 
 
 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
@@ -64,7 +69,7 @@
                     </div>
                     <div class="form-group">
                         <label for="announcementContent">Announcement:</label>
-                        <textarea class="form-control" id="announcementContent" name="announcement" rows="3"></textarea>
+                        <textarea class="form-control" id="announcementContent" name="announcement" rows="3" required></textarea>
                     </div>
                     <button type="submit" class="btn btn-primary" data-cy="announcement-create">Submit</button>
                 </form>
@@ -76,4 +81,4 @@
     </div>
 </div>
 
-<%- include("templates/footer") %>
+<%- include("templates/footer_announcement") %>

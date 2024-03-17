@@ -18,6 +18,7 @@ async function registeredUser(email) {
 		}
 	});
 
+
 	if (existingUser) {
 		return existingUser;
 	}
@@ -51,6 +52,7 @@ async function validateInput(email, password) {
 
 	return resData;
 }
+
 
 router.get("/", function (req, res, next) {
 	let successMsg = "";
