@@ -20,6 +20,7 @@ async function getAnnouncements(req, res) {
 	try {
 		const decoded = jwt.verify(existingToken, process.env.JWT_SECRET);
 
+		const messages = req.flash('messages')[0] || {};
 		const user = await prisma.user.findUnique({
 			where: {
 				user_id: decoded.user_id
@@ -40,9 +41,9 @@ async function getAnnouncements(req, res) {
 		});
 
 		if (properties.length === 0) {
-			return res.render('announcement_LL', { properties: [] });
+			return res.render('announcement_LL', { properties: [], messages });
 		} else {
-			res.render('announcement_LL', { properties });
+			res.render('announcement_LL', { properties, messages });
 		}
 	} catch (err) {
 		if (err.name === 'TokenExpiredError') {
@@ -60,111 +61,132 @@ async function getAnnouncements(req, res) {
  */
 async function submitAnnouncement(req, res) {
 	const existingToken = req.cookies.jwt;
+	const resData = {};
 
 	if (!existingToken) {
-		return res.redirect('/login');
+			return res.redirect('/login');
 	}
 
 	try {
-		const decoded = jwt.verify(existingToken, process.env.JWT_SECRET);
+			const decoded = jwt.verify(existingToken, process.env.JWT_SECRET);
 
-		const user = await prisma.user.findUnique({
-			where: {
-				user_id: decoded.user_id
-			}
-		});
-
-		if (!user) {
-			return res.status(400).json({ error: 'User not found' });
-		}
-
-		const { property_id, announcement } = req.body;
-		const propertyIdInt = parseInt(property_id);
-
-		const newAnnouncement = await prisma.announcements.create({
-			data: {
-				announcement: announcement,
-				property: propertyIdInt
-			}
-		});
-		if (!newAnnouncement) {
-			return res.status(400).json({ error: 'Failed to submit announcement' });
-		}
-		// // Update the property to include the announcement
-		const updatedProperty = await prisma.properties.update({
-			where: {
-				property_id: propertyIdInt
-			},
-			data: {
-				announcements: {
-					connect: {
-						announcement_id: newAnnouncement.announcement_id
+			const user = await prisma.user.findUnique({
+					where: {
+							user_id: decoded.user_id
 					}
-				}
+			});
+
+			if (!user) {
+					return res.status(400).json({ error: 'User not found' });
 			}
-		});
-		if (!updatedProperty) {
-			return res.status(400).json({ error: 'Failed to update property' });
-		} else {
-			res.redirect('/landlord-announcements');
-		}
-	}
-	catch (err) {
-		if (err.name === 'TokenExpiredError') {
-			return res.redirect('/login');
-		}
-	}
-}
+
+			const { property_id, announcement } = req.body;
+			const propertyIdInt = parseInt(property_id);
+
+			const newAnnouncement = await prisma.announcements.create({
+					data: {
+							announcement: announcement,
+							property: propertyIdInt
+					}
+			});
+
+			if (!newAnnouncement) {
+					return res.status(400).json({ error: 'Failed to submit announcement' });
+			}
+
+			const updatedProperty = await prisma.properties.update({
+					where: {
+							property_id: propertyIdInt
+					},
+					data: {
+							announcements: {
+									connect: {
+											announcement_id: newAnnouncement.announcement_id
+									}
+							}
+					}
+			});
+
+			if (!updatedProperty) {
+					return res.status(400).json({ error: 'Failed to update property' });
+					
+			} else {
+				resData['SubmissionSuccess'] = 'Announcement successfully submitted';
+			}
+
+			if (Object.keys(resData).length > 0) {
+				req.flash('messages', resData);
+				return res.redirect('/landlord-announcements');
+			}
+
+	} catch (err) {
+			if (err.name === 'TokenExpiredError') {
+					return res.redirect('/login');
+			} else {
+					console.error(err);
+					return res.status(500).json({ error: 'Internal server error' });
+			}
+	}}
+
 
 async function removeAnnouncement(req, res) {
 	const existingToken = req.cookies.jwt;
+	const resData = {};
 
 	if (!existingToken) {
-		return res.redirect('/login');
+			return res.redirect('/login');
 	}
 
 	try {
-		const decoded = jwt.verify(existingToken, process.env.JWT_SECRET);
+			const decoded = jwt.verify(existingToken, process.env.JWT_SECRET);
 
-		const user = await prisma.user.findUnique({
-			where: {
-				user_id: decoded.user_id
-			}
-		});
+			const user = await prisma.user.findUnique({
+					where: {
+							user_id: decoded.user_id
+					}
+			});
 
-		if (!user) {
-			return res.status(400).json({ error: 'User not found' });
-		}
+			if (!user) {
+					return res.status(400).json({ error: 'User not found' });
+			}
 
-		const { announcement_id } = req.body;
-		const announcementIdInt = parseInt(announcement_id);
-		// Find the announcement to be removed
-		const announcementToRemove = await prisma.announcements.findUnique({
-			where: {
-				announcement_id: announcementIdInt
+			const { announcement_id } = req.body;
+			const announcementIdInt = parseInt(announcement_id);
+
+			const announcementToRemove = await prisma.announcements.findUnique({
+					where: {
+							announcement_id: announcementIdInt
+					}
+			});
+
+			if (!announcementToRemove) {
+					return res.status(400).json({ error: 'Announcement not found' });
 			}
-		});
-		if (!announcementToRemove) {
-			return res.status(400).json({ error: 'Announcement not found' });
-		}
-		// Remove the announcement
-		
-		await prisma.announcements.delete({
-			where: {
-				announcement_id: announcementIdInt
+
+			await prisma.announcements.delete({
+					where: {
+							announcement_id: announcementIdInt
+					}
+			});
+			resData['Removalsuccess'] = 'Announcement successfully removed';
+
+			if (Object.keys(resData).length > 0) {
+				req.flash('messages', resData);
+				return res.redirect('/landlord-announcements');
 			}
-		});
-		// Get the updated list of properties
-		// const properties = await getAnnouncements(req, res);
-		// return res.render('announcement_LL', { properties });
-		res.redirect('/landlord-announcements');
 	} catch (err) {
-		if (err.name === 'TokenExpiredError') {
-			return res.redirect('/login');
-		}
-		return res.status(500).json({ error: 'Internal server error' });
+			if (err.name === 'TokenExpiredError') {
+					return res.redirect('/login');
+			} else {
+					console.error(err);
+					res.status(500).json({ error: 'Internal server error' });
+			}
+	} finally {
+		prisma.$disconnect();
 	}
 }
+
+
 
 
 router.post("/", async function (req, res, next) {

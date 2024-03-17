@@ -3,6 +3,21 @@
 <div class="container">
     <br>
     <h1>Announcements</h1>
+
+    <% if (messages.Removalsuccess) { %>
+        <div class="alert alert-success" role="alert">
+            <%= messages.Removalsuccess %>
+        </div>
+
+    <% } %>
+
+    <% if (messages.SubmissionSuccess) { %>
+        <div class="alert alert-success" role="alert">
+            <%= messages.SubmissionSuccess %>
+        </div>
+    <% } %>
+
+
     <div class="p-5">
         <table id="announcement_table" class="table table-striped" style="width:100%">
             <thead>
