@@ -11,12 +11,16 @@ function generateJWT(property_id, tenant_id) {
 
 async function validateInput(email) {
   const resData = {};
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   if (!email) {
     resData['emailInvalid'] = 'Enter an email';
     return resData;
   } else if (email.length > 150) {
     resData['emailInvalid'] = 'Enter an email up to 150 characters';
+    return resData;
+  } else if (!emailPattern.test(email)) {
+    resData['emailInvalid'] = 'Enter a valid email';
     return resData;
   }
 
@@ -69,20 +73,13 @@ function sendEmail(email, tenant_id, property) {
 
 router.get('/', async function(req, res, next) {
   const data = {};
-  const existingToken = req.cookies.jwt;
 
-  if (!existingToken) {
-    return res.redirect('/login');
-  }
-
-  jwt.verify(existingToken, process.env.JWT_SECRET, async (err, decoded) => {
+  jwt.verify(req.cookies.jwt, process.env.JWT_SECRET, async (err, decoded) => {
     if (err) {
-      if (err.name === 'TokenExpiredError') {
-        return res.redirect('/login');
-      }
+      return res.redirect('/login');
     } else {
       if (decoded.role === 2) {
-        return res.redirect('/');
+        return res.redirect('/tenant-announcements');
       }
 
       try {
@@ -113,7 +110,7 @@ router.get('/', async function(req, res, next) {
         tenants.forEach((tenant) => {
           const property = properties.find((property) => property.property_id === tenant.property_fk);
           const combined = {...property, ...tenant};
-          combined.action = `landlord-tenant-list/remove/${combined.user_id}`;
+          combined.action = `/landlord-tenant-list/remove/${combined.user_id}`;
           tenantResults.push(combined);
         });
 
@@ -140,25 +137,18 @@ router.get('/', async function(req, res, next) {
 
 router.get('/remove/:user_id', async function(req, res, next) {
   const resData = {};
-  const existingToken = req.cookies.jwt;
   const userId = parseInt(req.params.user_id, 10);
 
   if (isNaN(userId)) {
     return res.redirect('/landlord-tenant-list');
   }
 
-  if (!existingToken) {
-    return res.redirect('/login');
-  }
-
-  jwt.verify(existingToken, process.env.JWT_SECRET, async (err, decoded) => {
+  jwt.verify(req.cookies.jwt, process.env.JWT_SECRET, async (err, decoded) => {
     if (err) {
-      if (err.name === 'TokenExpiredError') {
-        return res.redirect('/login');
-      }
+      return res.redirect('/login');
     } else {
       if (decoded.role === 2) {
-        return res.redirect('/');
+        return res.redirect('/tenant-announcements');
       }
 
       try {
@@ -193,8 +183,6 @@ router.get('/remove/:user_id', async function(req, res, next) {
           req.flash('messages', resData);
           return res.redirect('/landlord-tenant-list');
         }
-
-        return res.redirect('/landlord-tenant-list');
       } catch (err) {
         console.log(err);
       } finally {
@@ -207,22 +195,15 @@ router.get('/remove/:user_id', async function(req, res, next) {
 router.post('/', async function(req, res, next) {
   const {email, property} = req.body;
   const resData = await validateInput(email);
-  const existingToken = req.cookies.jwt;
   const propertyId = parseInt(property, 10);
 
-  if (!existingToken) {
-    return res.redirect('/login');
-  }
-
-  jwt.verify(existingToken, process.env.JWT_SECRET, async (err, decoded) => {
+  jwt.verify(req.cookies.jwt, process.env.JWT_SECRET, async (err, decoded) => {
     if (err) {
-      if (err.name === 'TokenExpiredError') {
-        return res.redirect('/login');
-      }
+      return res.redirect('/login');
     } else {
       try {
         if (decoded.role === 2) {
-          return res.redirect('/');
+          return res.redirect('/tenant-announcements');
         }
 
         if (Object.keys(resData).length > 0) {

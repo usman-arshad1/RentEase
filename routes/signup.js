@@ -20,6 +20,7 @@ async function existingEmail(email) {
 
 async function validateInput(fname, lname, email, password, role) {
   const resData = {};
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   if (!fname) {
     resData['fnameInvalid'] = 'Enter a first name';
@@ -35,6 +36,9 @@ async function validateInput(fname, lname, email, password, role) {
 
   if (!email) {
     resData['emailInvalid'] = 'Enter an email';
+  } else if (!emailPattern.test(email)) {
+    resData['emailInvalid'] = 'Enter a valid email';
+    return resData;
   } else if (email.length > 150) {
     resData['emailInvalid'] = 'Enter an email up to 150 characters';
   } else if (await existingEmail(email)) {
@@ -43,6 +47,8 @@ async function validateInput(fname, lname, email, password, role) {
 
   if (!password) {
     resData['passwordInvalid'] = 'Enter a password';
+  } else if (password.length < 8) {
+    resData['passwordInvalid'] = 'Enter a password with a minimum of 8 characters';
   }
 
   if (!role || (role !== 'landlord' && role !== 'tenant')) {

@@ -9,11 +9,22 @@ describe('signup page', () => {
     cy.wait(1000);
   });
 
-  it('signup success', () => {
-    cy.get('[data-cy="fname-input"]').type('Cade', {delay: 100});
-    cy.get('[data-cy="lname-input"]').type('Lee', {delay: 100});
-    cy.get('[data-cy="email-input"]').type('cade@lee.com', {delay: 100});
-    cy.get('[data-cy="password-input"]').type('cadelee123', {delay: 100});
+  it('landlord signup success', () => {
+    cy.get('[data-cy="fname-input"]').type('Elias', {delay: 100});
+    cy.get('[data-cy="lname-input"]').type('Lindholm', {delay: 100});
+    cy.get('[data-cy="email-input"]').type('elias@lindholm.com', {delay: 100});
+    cy.get('[data-cy="password-input"]').type('canucks123', {delay: 100});
+    cy.get('[data-cy="signup-form"]').submit();
+    cy.url().should('include', '/login?message=success');
+  });
+
+  it('tenant signup success', () => {
+    cy.get('[data-cy="landlord-radio"]').invoke('removeAttr', 'checked');
+    cy.get('[data-cy="fname-input"]').type('Jason', {delay: 100});
+    cy.get('[data-cy="lname-input"]').type('Robertson', {delay: 100});
+    cy.get('[data-cy="email-input"]').type('jason@robertson.com', {delay: 100});
+    cy.get('[data-cy="password-input"]').type('stars123', {delay: 100});
+    cy.get('[data-cy="tenant-radio"]').check();
     cy.get('[data-cy="signup-form"]').submit();
     cy.url().should('include', '/login?message=success');
   });
@@ -29,7 +40,7 @@ describe('signup page', () => {
 
   it('long first name', () => {
     cy.get('[data-cy="fname-input"]').invoke('removeAttr', 'maxlength');
-    cy.get('[data-cy="fname-input"]').type('Testnametestnametestnametestnametestnametestnametestnametestnametestnametestnametestnametestnametestnametestnametestnametestnametestnametestnametestname', {delay: 25});
+    cy.get('[data-cy="fname-input"]').type('Testnametestnametestnametestnametestnametestnametestnametestnametestnametestnametestnametestnametestnametestnametestnametestnametestnametestnametestnam', {delay: 25});
     cy.get('[data-cy="lname-input"]').type('Myers', {delay: 100});
     cy.get('[data-cy="email-input"]').type('tyler@myers.com', {delay: 100});
     cy.get('[data-cy="password-input"]').type('canucks123', {delay: 100});
@@ -38,10 +49,12 @@ describe('signup page', () => {
   });
 
   it('empty last name', () => {
+    cy.get('[data-cy="landlord-radio"]').invoke('removeAttr', 'checked');
+    cy.get('[data-cy="tenant-radio"]').check();
     cy.get('[data-cy="lname-input"]').invoke('removeAttr', 'required');
-    cy.get('[data-cy="fname-input"]').type('Tyler', {delay: 100});
-    cy.get('[data-cy="email-input"]').type('tyler@myers.com', {delay: 100});
-    cy.get('[data-cy="password-input"]').type('canucks123', {delay: 100});
+    cy.get('[data-cy="fname-input"]').type('Auston', {delay: 100});
+    cy.get('[data-cy="email-input"]').type('auston@matthews.com', {delay: 100});
+    cy.get('[data-cy="password-input"]').type('leafss123', {delay: 100});
     cy.get('[data-cy="signup-form"]').submit();
     cy.get('[data-cy="lname-invalid"]').should('be.visible').contains('Enter a last name');
   });
@@ -49,7 +62,7 @@ describe('signup page', () => {
   it('long last name', () => {
     cy.get('[data-cy="lname-input"]').invoke('removeAttr', 'maxlength');
     cy.get('[data-cy="fname-input"]').type('Tyler', {delay: 100});
-    cy.get('[data-cy="lname-input"]').type('Testnametestnametestnametestnametestnametestnametestnametestnametestnametestnametestnametestnametestnametestnametestnametestnametestnametestnametestname', {delay: 25});
+    cy.get('[data-cy="lname-input"]').type('Testnametestnametestnametestnametestnametestnametestnametestnametestnametestnametestnametestnametestnametestnametestnametestnametestnametestnametestnam', {delay: 25});
     cy.get('[data-cy="email-input"]').type('tyler@myers.com', {delay: 100});
     cy.get('[data-cy="password-input"]').type('canucks123', {delay: 100});
     cy.get('[data-cy="signup-form"]').submit();
@@ -69,10 +82,20 @@ describe('signup page', () => {
     cy.get('[data-cy="email-input"]').invoke('removeAttr', 'maxlength');
     cy.get('[data-cy="fname-input"]').type('Tyler', {delay: 100});
     cy.get('[data-cy="lname-input"]').type('Myers', {delay: 100});
-    cy.get('[data-cy="email-input"]').type('Testnametestnametestnametestnametestnametestnametestnametestnametestnametestnametestnametestnametestnametestnametestnametestnametestnametestnametestname@testname.com', {delay: 25});
+    cy.get('[data-cy="email-input"]').type('Testnametestnametestnametestnametestnametestnametestnametestnametestnametestnametestnametestnametestnametestnametestnametestnametestnamete@testname.com', {delay: 25});
     cy.get('[data-cy="password-input"]').type('canucks123', {delay: 100});
     cy.get('[data-cy="signup-form"]').submit();
     cy.get('[data-cy="email-invalid"]').should('be.visible').contains('Enter an email up to 150 characters');
+  });
+
+  it('invalid email', () => {
+    cy.get('[data-cy="email-input"]').invoke('attr', 'type', 'text');
+    cy.get('[data-cy="fname-input"]').type('Tyler', {delay: 100});
+    cy.get('[data-cy="lname-input"]').type('Myers', {delay: 100});
+    cy.get('[data-cy="email-input"]').type('tyler.myers', {delay: 100});
+    cy.get('[data-cy="password-input"]').type('canucks123', {delay: 100});
+    cy.get('[data-cy="signup-form"]').submit();
+    cy.get('[data-cy="email-invalid"]').should('be.visible').contains('Enter a valid email');
   });
 
   it('email already exists', () => {
@@ -91,6 +114,15 @@ describe('signup page', () => {
     cy.get('[data-cy="email-input"]').type('tyler@myers.com', {delay: 100});
     cy.get('[data-cy="signup-form"]').submit();
     cy.get('[data-cy="password-invalid"]').should('be.visible').contains('Enter a password');
+  });
+
+  it('short password', () => {
+    cy.get('[data-cy="fname-input"]').type('Tyler', {delay: 100});
+    cy.get('[data-cy="lname-input"]').type('Myers', {delay: 100});
+    cy.get('[data-cy="email-input"]').type('tyler@myers.com', {delay: 100});
+    cy.get('[data-cy="password-input"]').type('canucks', {delay: 100});
+    cy.get('[data-cy="signup-form"]').submit();
+    cy.get('[data-cy="password-invalid"]').should('be.visible').contains('Enter a password with a minimum of 8 characters');
   });
 
   it('no role', () => {

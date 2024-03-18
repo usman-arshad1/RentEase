@@ -10,9 +10,7 @@ router.get('/', function(req, res, next) {
 
   jwt.verify(token, process.env.JWT_SECRET, async (err, decoded) => {
     if (err) {
-      if (err.name === 'TokenExpiredError') {
-        return res.redirect('/login');
-      }
+      return res.redirect('/login');
     } else {
       try {
         await prisma.user.update({
@@ -27,8 +25,6 @@ router.get('/', function(req, res, next) {
 
         resData['inviteSuccess'] = 'Successfully invited!';
         return res.render('invitation', {resData});
-      } catch (err) {
-        console.log(err);
       } finally {
         prisma.$disconnect();
       }

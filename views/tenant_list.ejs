@@ -75,7 +75,7 @@
                             <td><%= `${tenant.first_name} ${tenant.last_name}` %></td>
                             <td><%= tenant.email %></td>
                             <td>
-                                <form method="GET" action="<%= tenant.action %>">
+                                <form method="GET" action="<%= tenant.action %>" data-cy="remove-form">
                                     <button type="submit" data-cy="remove-tenant" class="btn btn-danger btn-sm">Remove</button>
                                 </form>
                             </td>

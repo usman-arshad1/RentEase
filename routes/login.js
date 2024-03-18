@@ -28,9 +28,13 @@ async function registeredUser(email) {
 
 async function validateInput(email, password) {
   const resData = {};
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   if (!email) {
     resData['emailInvalid'] = 'Enter an email';
+    return resData;
+  } else if (!emailPattern.test(email)) {
+    resData['emailInvalid'] = 'Enter a valid email';
     return resData;
   } else if (email.length > 150) {
     resData['emailInvalid'] = 'Enter an email up to 150 characters';
@@ -46,6 +50,8 @@ async function validateInput(email, password) {
 
   if (!password) {
     resData['passwordInvalid'] = 'Enter a password';
+  } else if (password.length < 8) {
+    resData['passwordInvalid'] = 'Enter a password with a minimum of 8 characters';
   } else if (await bcrypt.compare(password, result.password) === false) {
     resData['passwordInvalid'] = 'Incorrect password';
   }
