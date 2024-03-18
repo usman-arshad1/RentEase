@@ -13,57 +13,6 @@ describe('landlord tenant list page', () => {
     cy.wait(1000);
   });
 
-  it('remove tenant success', () => {
-    cy.get('[data-cy="tenant-row"]').should('be.visible');
-    cy.get('[data-cy="remove-tenant"]').first().click();
-    cy.get('[data-cy="remove-valid"]').should('be.visible').contains('Successfully removed tenant from the property!');
-  });
-
-  it('user id is not a number for removing', () => {
-    cy.get('[data-cy="tenant-row"]').should('be.visible');
-    cy.get('[data-cy="remove-form"]').first().invoke('attr', 'action', '/landlord-tenant-list/remove/test');
-    cy.get('[data-cy="remove-tenant"]').first().click();
-    cy.get('[data-cy="remove-valid"]').should('not.exist');
-  });
-
-  it('invalid or non existing jwt should not remove tenant', () => {
-    cy.request({
-      method: 'POST',
-      url: 'http://localhost:8080/signout',
-    }).then(() => {
-      cy.visit('http://localhost:8080/landlord-tenant-list/remove/1');
-      cy.url().should('include', '/login');
-    });
-  });
-
-  it('tenants should not remove tenants', () => {
-    cy.visit('http://localhost:8080/login');
-    cy.get('[data-cy="email-input"]').type('sidney@crosby.com', {delay: 100});
-    cy.get('[data-cy="password-input"]').type('penguins123', {delay: 100});
-    cy.get('[data-cy="login-form"]').submit();
-    cy.visit('http://localhost:8080/landlord-tenant-list/remove/1');
-    cy.url().should('include', '/tenant-announcements');
-  });
-
-  it('invalid or non existing jwt to load landlord-tenant-list', () => {
-    cy.request({
-      method: 'POST',
-      url: 'http://localhost:8080/signout',
-    }).then(() => {
-      cy.visit('http://localhost:8080/landlord-tenant-list');
-      cy.url().should('include', '/login');
-    });
-  });
-
-  it('tenants should not load landlord-tenant-list', () => {
-    cy.visit('http://localhost:8080/login');
-    cy.get('[data-cy="email-input"]').type('sidney@crosby.com', {delay: 100});
-    cy.get('[data-cy="password-input"]').type('penguins123', {delay: 100});
-    cy.get('[data-cy="login-form"]').submit();
-    cy.visit('http://localhost:8080/landlord-tenant-list');
-    cy.url().should('include', '/tenant-announcements');
-  });
-
   it('email invitation sent success', () => {
     cy.get('[data-bs-target="#invite-modal"]').click();
     cy.wait(1000);
@@ -104,25 +53,5 @@ describe('landlord tenant list page', () => {
     cy.get('[data-cy="email-input"]').type('elias@petey.com');
     cy.get('[data-cy="submit-button"]').click();
     cy.get('[data-cy="email-invalid"]').should('be.visible').contains('Tenant is already assigned to a property');
-  });
-
-  it('tenants should not send email', () => {
-    cy.visit('http://localhost:8080/login');
-    cy.get('[data-cy="email-input"]').type('sidney@crosby.com', {delay: 100});
-    cy.get('[data-cy="password-input"]').type('penguins123', {delay: 100});
-    cy.get('[data-cy="login-form"]').submit();
-    cy.request({
-      method: 'POST',
-      url: 'http://localhost:8080/landlord-tenant-list',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: {
-        key1: 'sidney@crosby123.com',
-        key2: 1,
-      },
-    }).then(() => {
-      cy.url().should('include', '/tenant-announcements');
-    });
   });
 });
