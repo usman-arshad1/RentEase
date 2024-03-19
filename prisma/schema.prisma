@@ -9,10 +9,14 @@ datasource db {
 
 model feedback {
   feedback_id                    Int        @id @default(autoincrement())
-  details                        String     @db.VarChar(1000)
+  title                          String     @db.VarChar(200)
+  category                       Int
+  description                    String     @db.VarChar(1000)
+  update                         String?    @db.VarChar(1000)
+  date                           String     @db.VarChar(45)
+  status                         Int        @default(1)
   property_fk                    Int
   user_id_fk                     Int
-  status                         Int
   user                           user       @relation(fields: [user_id_fk], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "feedback_user_fk")
   properties                     properties @relation(fields: [property_fk], references: [property_id], onDelete: NoAction, onUpdate: NoAction, map: "property_fk")
   status_feedback_statusTostatus status     @relation("feedback_statusTostatus", fields: [status], references: [status_id], onDelete: NoAction, onUpdate: NoAction, map: "status_fk")

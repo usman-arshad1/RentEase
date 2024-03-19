@@ -1,10 +1,32 @@
 <%- include("templates/header_tenant") %>
+
+<br>
+<br>
 <div class="container">
+    <br>
     <h1>Announcements</h1>
-    <div class="spacer">
-        List of announcements from landlord goes here
-    </div> 
+    <div class="p-5">
+        <table id="announcement_table" class="table table-striped" style="width:100%">
+            <thead>
+                <tr>
+                    <th>Property</th>
+                    <th>Announcement</th>
+                    
+                </tr>
+            </thead>
+            <tbody>
+                <% properties.forEach(property => { %>
+                    <% property.announcements.forEach(announcement => { %>
+                    <tr data-cy="announcement-view">
+                        <td><%= `${property.unit} ${property.street}, ${property.city}` %></td>
+                        <td><%= announcement.announcement %></td>
+                    </tr>
+                    <% }); %>
+                <% }); %>
+            </tbody>
+        </table>
+    </div>
+    <br>
 </div>
 
-
-<%- include("templates/footer") %>
+<%- include("templates/footer_announcement") %>

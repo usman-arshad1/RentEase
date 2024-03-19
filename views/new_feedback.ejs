@@ -1,0 +1,50 @@
+<%- include("templates/header_tenant") %>
+<div class="container-lg">
+    <div class="text-center">
+        <h2>Submit Feedback</h2>
+        <p class="lead">Do you have any building defects to report? For example, structural, safety, or cosmetic issues.</p>
+    </div>
+    <div class="row justify-content-center my-5">
+        <div class="col-lg-6">
+            <form action="/new-feedback" method="post">
+                
+                <div class="form-floating mb-4">
+                    <input type="text" class="form-control" name="title" placeholder="e.g. Broken door handle">
+                    <label for="title">Title:</label>
+                </div>
+                
+                <label for="category" class="form-label">What is your feedback about?</label>
+                <select type="text" class="form-select" name="category">
+                    <option value="1" selected>Strutural Defect</option>
+                    <option value="2">Safety Concern</option>
+                    <option value="3">Cosmetic Defect</option>
+                    <option value="4">Applicance Defect</option>
+                    <option value="5">Other</option>
+                </select>
+
+                <div class="form-floating mb-4 mt-4">
+                    <textarea type="text" name="description" style="height: 140px" class="form-control"></textarea>
+                    <label for="description">Description:</label>
+                </div>
+
+                <!-- TO ADD FUNCTIONALITY FOR UPLOADING IMAGES -->
+                <!-- <div class="mb-4 text-center">
+                    <label for="photo">Upload a Photo</label>
+                    <button type="submit" class="btn btn-secondary">Upload</button>
+                </div> -->
+
+                <div class="mb-4 text-center">
+                    <button type="submit" class="btn btn-secondary">Submit</button>
+                </div>
+            </form>
+        </div>
+
+    </div>
+
+
+
+</div>
+
+
+
+<%- include("templates/footer") %>

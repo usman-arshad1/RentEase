@@ -1,13 +1,34 @@
-<%- include("templates/header_LL", { title: 'Tenant List - RentEase' }) %>
+<%- include("templates/header_LL") %>
+
 <div class="container">
     <h1>Tenant List</h1>
 
-    <a class="btn btn-success">Invite New Tenant</a>
-    <hr />
+    <% if (data.properties.length !== 0) { %>
+        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#invite-modal">Invite New Tenant</button>
+        <hr />
+    <% } %>
 
-    <% if (typeof(resData) !== 'undefined' && typeof(resData['tenants']) !== 'undefined') { %>
+    <% if (messages.emailInvalid) { %>
+        <div class="alert alert-danger" role="alert" data-cy="email-invalid">
+            <%= messages.emailInvalid %>
+        </div>
+    <% } %>
+
+    <% if (messages.removeValid) { %>
+        <div class="alert alert-success" role="alert" data-cy="remove-valid">
+            <%= messages.removeValid %>
+        </div>
+    <% } %>
+
+    <% if (messages.emailSentValid) { %>
+        <div class="alert alert-success" role="alert" data-cy="email-sent-valid">
+            <%= messages.emailSentValid %>
+        </div>
+    <% } %>
+
+    <!-- <% if (data.tenants) { %>
         <div class="table-responsive">
-            <table class="table table-hover table-striped">
+            <table class="table table-hover table-striped" data-cy="tenant-list-table">
                 <thead class="table-dark">
                     <tr>
                         <th>Property</th>
@@ -18,24 +39,86 @@
                 </thead>
                 <tbody>
 
-                    <% resData['tenants'].forEach(tenant => { %>
-                        <tr>
+                    <% data.tenants.forEach(tenant => { %>
+                        <tr data-cy="tenant-row">
                             <td><%= `${tenant.unit} ${tenant.street}, ${tenant.city}, ${tenant.country}` %></td>
                             <td><%= `${tenant.first_name} ${tenant.last_name}` %></td>  
                             <td><%= tenant.email %></td>
                             <td>
                                 <form method="GET" action="<%= tenant.action %>">
-                                    <button type="submit" class="btn btn-danger btn-sm">Remove</button>
+                                    <button type="submit" data-cy="remove-tenant" class="btn btn-danger btn-sm">Remove</button>
                                 </form>
                             </td>
                         </tr>
                     <% }) %>
-    
+
                 </tbody>
             </table>
         </div>
+    <% } %> -->
+
+    <% if (data.tenants) { %>
+        <div class="p-5">
+            <table id = "tenant_table" class="table table-striped" data-cy="tenant-list-table" style="width:100%">
+                <thead>
+                    <tr>
+                        <th>Property</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% data.tenants.forEach(tenant => { %>
+                        <tr data-cy="tenant-row">
+                            <td><%= `${tenant.unit} ${tenant.street}, ${tenant.city}, ${tenant.country}` %></td>
+                            <td><%= `${tenant.first_name} ${tenant.last_name}` %></td>
+                            <td><%= tenant.email %></td>
+                            <td>
+                                <form method="GET" action="<%= tenant.action %>" data-cy="remove-form">
+                                    <button type="submit" data-cy="remove-tenant" class="btn btn-danger btn-sm">Remove</button>
+                                </form>
+                            </td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+        </div>
     <% } %>
+
 
 </div>
 
-<%- include("templates/footer") %>
+<div class="modal fade" id="invite-modal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5">Invite Tenant to a Property</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="invite-form" method="POST" action="/landlord-tenant-list">
+                    <div class="form-floating mb-3">
+                        <input type="email" class="form-control" id="email-input" name="email" placeholder="Email" data-cy="email-input" required>
+                        <label for="email-input">Email</label>
+                    </div>
+                    <div class="mb-3">
+                        <select class="form-select" name="property">
+
+                            <% for (let i = 0; i < data.properties.length; i++) { %>
+                                <% if (i === 0) { %>
+                                    <option value="<%= data.properties[i].property_id %>" selected><%= `${data.properties[i].unit} ${data.properties[i].street}, ${data.properties[i].city}, ${data.properties[i].country}` %></option>
+                                <% } else { %>
+                                    <option value="<%= data.properties[i].property_id %>"><%= `${data.properties[i].unit} ${data.properties[i].street}, ${data.properties[i].city}, ${data.properties[i].country}` %></option>
+                                <% } %>
+                            <% } %>
+
+                        </select>
+                    </div>
+                    <button type="submit" data-cy="submit-button" class="btn btn-primary">Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include("templates/footer_tenants") %>

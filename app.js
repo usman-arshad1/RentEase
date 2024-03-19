@@ -1,81 +1,111 @@
-var createError = require("http-errors");
-var express = require("express");
-var path = require("path");
-var cookieParser = require("cookie-parser");
-var logger = require("morgan");
-const dotenv = require("dotenv");
+const createError = require('http-errors');
+const express = require('express');
+const flash = require('express-flash');
+const session = require('express-session');
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
+const dotenv = require('dotenv');
 const port = process.env.PORT || 8080;
 const methodOverride = require("method-override")
 
 dotenv.config();
 
-var indexRouter = require("./routes/index");
-var usersRouter = require("./routes/users");
-var signupRouter = require("./routes/signup");
-var loginRouter = require("./routes/login");
-//Landlord User Route Config
-var announcementLLRouter = require("./routes/announcement_LL");
-var feedbackLLRouter = require("./routes/feedback_LL");
-var propertyRouter = require("./routes/property");
-var tenantListRouter = require("./routes/tenant_list");
+const indexRouter = require('./routes/index');
+const usersRouter = require('./routes/users');
+const signupRouter = require('./routes/signup');
+const loginRouter = require('./routes/login');
+const invitationRouter = require('./routes/invitation');
+const signoutRouter = require('./routes/signout');
+// Landlord User Route Config
+const announcementLLRouter = require('./routes/announcement_LL');
+const feedbackLLRouter = require('./routes/feedback_LL');
+const viewFeedbackLLRouter = require('./routes/view_feedback_LL');
+const propertyRouter = require('./routes/property');
+const tenantListRouter = require('./routes/tenant_list');
 
-//Tenant User Route Config
-var announcementTenantRouter = require("./routes/announcement_tenant");
-var feedbackTenantRouter = require("./routes/feedback_tenant");
+// Tenant User Route Config
+const announcementTenantRouter = require('./routes/announcement_tenant');
+const feedbackTenantRouter = require('./routes/feedback_tenant');
+const viewFeedbackTenantRouter = require('./routes/view_feedback_tenant');
+const newFeedbackTenantRouter = require('./routes/new_feedback');
 
-//To Confirm if still required
-var dashboardRouter = require("./routes/dashboard");
-var addPropertyRouter = require("./routes/add_property");
+// To Confirm if still required
+const dashboardRouter = require('./routes/dashboard');
+const addPropertyRouter = require('./routes/add_property');
 
-var app = express();
+const app = express();
+
+if (global.__coverage__) {
+  console.log('have code coverage, will add middleware for express');
+  console.log(`to fetch: GET :${port}/__coverage__`);
+  require('@cypress/code-coverage/middleware/express')(app);
+}
 
 // view engine setup
-app.set("views", path.join(__dirname, "views"));
-app.set("view engine", "ejs");
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'ejs');
 
-app.use(logger("dev"));
+app.use(logger('dev'));
+
+app.use(session({
+  secret: 'FHA0HV0AVNA', // Change this to your secret key
+  resave: false,
+  saveUninitialized: false,
+}));
+
+app.use(flash());
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({extended: false}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 app.use(methodOverride('_method'));
 
-app.use("/", indexRouter);
-app.use("/users", usersRouter);
-app.use("/signup", signupRouter);
-app.use("/login", loginRouter);
+app.use('/', indexRouter);
+app.use('/users', usersRouter);
+app.use('/signup', signupRouter);
+app.use('/login', loginRouter);
+app.use('/invitation', invitationRouter);
+app.use('/signout', signoutRouter);
 
 // Landlord User Routes
-app.use("/landlord-announcements", announcementLLRouter);
-app.use("/landlord-feedback", feedbackLLRouter);
-app.use("/landlord-properties", propertyRouter);
-app.use("/landlord-tenant-list", tenantListRouter);
+app.use('/landlord-announcements', announcementLLRouter);
+app.use('/landlord-feedback', feedbackLLRouter);
+app.use('/landlord-view-feedback/', viewFeedbackLLRouter);
+app.use('/landlord-properties', propertyRouter);
+app.use('/landlord-tenant-list', tenantListRouter);
 
-//Tenant User Routes
-app.use("/tenant-announcements", announcementTenantRouter);
-app.use("/tenant-feedback", feedbackTenantRouter);
+// Tenant User Routes
+app.use('/tenant-announcements', announcementTenantRouter);
+app.use('/tenant-feedback', feedbackTenantRouter);
+app.use('/tenant-view-feedback/', viewFeedbackTenantRouter);
+app.use('/new-feedback', newFeedbackTenantRouter);
+// app.use("/submit-feedback", newFeedbackTenantRouter);
 
-app.use("/dashboard", dashboardRouter);
-app.use("/add_property", addPropertyRouter);
+app.use('/dashboard', dashboardRouter);
+app.use('/add_property', addPropertyRouter);
 
 // catch 404 and forward to error handler
-app.use(function (req, res, next) {
-	next(createError(404));
+app.use(function(req, res, next) {
+  next(createError(404));
 });
 
+// TODO Maybe change to make a call to get properties and/or
+// announcements before rendering the page
+
 app.listen(port, () => {
-	console.log(`Rent Ease web app listening at http://localhost:${port}`);
+  console.log(`Rent Ease web app listening at http://localhost:${port}`);
 });
 
 // error handler
-app.use(function (err, req, res, next) {
-	// set locals, only providing error in development
-	res.locals.message = err.message;
-	res.locals.error = req.app.get("env") === "development" ? err : {};
+app.use(function(err, req, res, next) {
+  // set locals, only providing error in development
+  res.locals.message = err.message;
+  res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-	// render the error page
-	res.status(err.status || 500);
-	res.render("error");
+  // render the error page
+  res.status(err.status || 500);
+  res.render('error');
 });
 
 module.exports = app;

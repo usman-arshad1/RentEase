@@ -1,15 +1,35 @@
-<%- include("templates/header_tenant") %>
-<div class="container">
-    <h1>New Feedback</h1>
-    <div class="spacer">
-        "New Feedback" is a button to create a new feedback.
-    </div>
-    <h1>Feedback</h1>
-    <div class="spacer">
-        List of feedback from the same user goes here
-    </div> 
+<%- include("templates/header_feedback_tenant") %>
+<div class="p-5">
+    <a href="/new-feedback">Add New Feedback</a>
+    <table id="feedback_table" class="table table-striped" style="width:100%">
+        <thead>
+            <tr>
+                <th>Property</th>
+                <th>Name</th>
+                <th>Title</th>
+                <th>Category</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th>View</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% let i=0 %>
+            <% for (i = 0; i < results.length; i++) { %>
+                <%- include('templates/tenant_feedback_row', {results: results[i], username: username})  %> 
+            <% } %>
+        </tbody>
+        <tfoot>
+            <tr>
+                <th>Property</th>
+                <th>Name</th>
+                <th>Title</th>
+                <th>Category</th>
+                <th>Date</th>
+                <th>Status</th>
+            </tr>
+        </tfoot>
+    </table>
 </div>
 
-
-
-<%- include("templates/footer") %>
+<%- include("templates/footer_feedback_tenant") %>

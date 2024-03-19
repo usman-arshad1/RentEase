@@ -1,0 +1,78 @@
+<%- include("templates/header_LL") %>
+<div class="container-lg">
+    <div class="text-center">
+        <h2>Update Feedback</h2>
+        <p class="lead">Respond to tenant's feedback using the update section.</p>
+    </div>
+    <div class="row justify-content-center my-5">
+        <div class="col-lg-6">
+            <form action="/landlord-view-feedback/<%= results.feedback_id %>" method="post">
+
+                <div class="form-floating mb-2">
+                    <div class="form-control" name="tenant">
+                    <label for="tenant">Tenant Name: <%= results.user_id_fk %></label>
+                </div>
+                <div class="form-floating mb-2 mt-2">
+                    <div class="form-control" name="property">
+                    <label for="property">Property: <%= results.property_fk %></label>
+                </div>
+                
+                <div class="form-floating mb-2 mt-2">
+                    <div class="form-control" name="title">
+                    <label for="title"><%= results.date + ': ' + results.title %></label>
+                </div>
+                <div class="form-floating mb-2 mt-2">
+                    <div class="form-control" name="category">
+                    <label for="category">Category: <%= results.category %></label>
+                </div>
+                <div class="form-floating mb-2 mt-2">
+                    <div class="form-control" name="description" style="height: 140px">
+                    <label for="description">Description: <br><%= results.description %></label>
+                </div>
+                <div class="text-left mt-2 mb-1" style="font-size: small; font-weight: bold;">Add Updates Here</div>
+                <select type="text" class="form-select mt-1" name="status">
+                    <% if (results.status == 1){ %>
+                        <option value=1 selected>Received</option>
+                    <%} else { %>
+                        <option value=1 >Received</option>
+                    <%}  %>    
+                    <% if (results.status == 2){ %>
+                        <option value=2 selected>In-Progress</option>
+                    <%} else { %>
+                        <option value=2>In-Progress</option>
+                    <%}  %>    
+                    <% if (results.status == 3){ %>
+                        <option value=3 selected>Completed</option>
+                    <%} else { %>
+                        <option value=3>Completed</option>
+                    <%}  %>    
+                </select>
+                <div class="text-left mt-2 mb-1" style="font-size: small;">
+                    New updates go to the top. Example: <br> Date (auto-generated): Completed <br> Date (auto-generated): Sending Someone tomorrow.
+                </div>
+                <div class="form-floating mb-2">
+                    <textarea type="text" name="update" style="height: 140px" class="form-control"><%= results.update %></textarea>
+                    <label for="update">Add an update.</label>
+                </div>
+
+                <!-- TO ADD FUNCTIONALITY FOR VIEWING IMAGES -->
+                <!-- <div class="mb-4 text-center">
+                    <label for="photo">Upload a Photo</label>
+                    <button type="submit" class="btn btn-secondary">Upload</button>
+                </div> -->
+
+                <div class="mb-4 text-center">
+                    <button type="submit" class="btn btn-secondary">Update Feedback</button>
+                </div>
+            </form>
+        </div>
+
+    </div>
+
+
+
+</div>
+
+
+
+<%- include("templates/footer") %>
