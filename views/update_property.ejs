@@ -12,7 +12,7 @@
 <form action="/landlord-properties/update/<%= property.property_id %>" method="POST">
     <input type="hidden" name="_method" value="PUT">
     <label for="unit">Unit</label><br>
-    <input type="number" id="unit" name="unit" value="<%= property.unit%>" required><br>
+    <input type="number" id="unit" name="unit" min="1" pattern="\d+" required><br>
 
     <label for="street">Street</label><br>
     <input type="text" id="street" name="street" value="<%= property.street%>" required><br>

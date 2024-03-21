@@ -10,7 +10,7 @@
     <h1>Add property</h1>
     <form action="/add_property" method="POST">
         <label for="unit">Unit</label><br>
-        <input type="number" id="unit" name="unit" required><br>
+        <input type="number" id="unit" name="unit" min="1" pattern="\d+" required><br>
 
         <label for="street">Street</label><br>
         <input type="text" id="street" name="street" required><br>

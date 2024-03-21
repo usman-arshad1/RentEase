@@ -38,6 +38,10 @@ router.post('/', verifyLandlord, async (req, res) => {
     const unitString = req.body.unit;
     const unit = parseInt(unitString);
 
+    if (unit < 1 || isNan(unit)) {
+      return res.status(400).send('Unit number must be a positive integer');
+    }
+
     const {street, city, province_state, country} = req.body;
     // Create a new property
     newProperty = await prisma.properties.create({
