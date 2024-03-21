@@ -11,7 +11,7 @@ async function validateAnnouncement(announcement) {
   if (!announcement) {
     resData['announcementInvalid'] = 'Enter an announcement';
   } else if (announcement.length > 500) {
-    resData['announcementInvalid'] = 'Enter an announcement up to 500 characters';
+    resData['announcementInvalid'] = 'Enter an announcement only up to 500 characters';
   }
 
   return resData;

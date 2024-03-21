@@ -21,6 +21,13 @@ describe('announcement', () => {
         .contains('Announcement successfully submitted');
   });
 
+  it('long announcement', () => {
+    cy.get('[data-cy="announcement-button"]').click();
+    cy.get('[id="announcementContent"]').type('This is a test announcement'.repeat(20), {delay: 2});
+    cy.get('[data-cy="announcement-create"]').click();
+    cy.get('[data-cy="announcement-invalid"]').should('be.visible').contains('Enter an announcement up to 500 characters');
+  });
+
   it('empty announcement', () => {
     cy.get('[data-cy="announcement-button"]').click();
     cy.get('[data-cy="announcement-create"]').click();
