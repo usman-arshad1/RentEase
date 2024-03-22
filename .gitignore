@@ -7,3 +7,4 @@ cypress/screenshots
 /.nyc_output
 .idea/
 .idea/workspace.xml
+.idea
