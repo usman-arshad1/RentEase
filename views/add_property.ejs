@@ -17,18 +17,17 @@
                id="street"
                name="street"
                placeholder="Street Address"
-               pattern="^[a-zA-Z0-9.]*$"
+               pattern="[a-zA-Z0-9.'\-]*"
                maxlength="50"
                oninvalid="invalidInput(this)"
                oninput="validateInput(this)"
                required><br>
-
         <label for="city">City</label><br>
         <input type="text"
                id="city"
                name="city"
                placeholder="City"
-               pattern="^[a-zA-Z0-9.]*$"
+               pattern="[a-zA-Z0-9.'\-]*"
                maxlength="50"
                oninvalid="invalidInput(this)"
                oninput="validateInput(this)"
