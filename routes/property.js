@@ -7,7 +7,7 @@ const prisma = new PrismaClient();
 function verifyLandlord(req, res, next) {
   const token = req.cookies.jwt;
   if (!token) {
-    return res.status(401).send('Access Denied / No token provided');
+    return res.redirect('/login');
   }
 
   try {
@@ -25,21 +25,21 @@ function verifyLandlord(req, res, next) {
 
 router.get('/', verifyLandlord, async function(req, res, next) {
   try {
-	  const currentUserId = req.user.user_id;
-	  const userProperties = await prisma.properties.findMany({
+    const currentUserId = req.user.user_id;
+    const userProperties = await prisma.properties.findMany({
       where: {
-		  user_id: currentUserId,
+        user_id: currentUserId,
       },
-	  });
-	  res.render('property', {
+    });
+    res.render('property', {
       title: 'Landlord Properties',
       properties: userProperties,
       userEmail: req.user.email,
-	  });
-	  console.log(req.user.email);
+    });
+    console.log(req.user.email);
   } catch (error) {
-	  console.error(error);
-	  res.status(500).send('An error occurred while fetching the properties');
+    console.error(error);
+    res.status(500).send('An error occurred while fetching the properties');
   }
 });
 
@@ -48,7 +48,7 @@ router.post('/:id', verifyLandlord, async (req, res) => {
   const {id} = req.params;
 
   try {
-    const property = await prisma.properties.delete({
+    await prisma.properties.delete({
       where: {
         property_id: parseInt(id),
       },
@@ -63,14 +63,14 @@ router.post('/:id', verifyLandlord, async (req, res) => {
 // Update property page
 router.get('/update/:id', verifyLandlord, async (req, res) => {
   const {id} = req.params;
-  const property_id = parseInt(id);
-  const user_id = req.user.user_id;
+  const propertyId = parseInt(id);
+  const userId = req.user.user_id;
 
   try {
     const currentProperty = await prisma.properties.findUnique({
       where: {
-        property_id: property_id,
-        user_id: user_id,
+        property_id: propertyId,
+        user_id: userId,
       },
     });
     if (!currentProperty) {
@@ -88,23 +88,23 @@ router.get('/update/:id', verifyLandlord, async (req, res) => {
 // Update property
 router.post('/update/:id', verifyLandlord, async (req, res)=> {
   const {id} = req.params;
-  const {unit, street, city, province_state, country} = req.body;
+  const {unit, street, city, provinceState, country} = req.body;
   try {
-    const property_id = parseInt(id);
-    const property_unit = parseInt(unit);
+    const propertyId = parseInt(id);
+    const propertyUnit = parseInt(unit);
 
-    const updateProperty = await prisma.properties.update({
+    await prisma.properties.update({
       where: {
-        property_id: property_id,
+        property_id: propertyId,
       },
       data:
-				{
-				  unit: property_unit,
-				  street: street,
-				  city: city,
-				  province_state: province_state,
-				  country: country,
-				},
+        {
+          unit: propertyUnit,
+          street: street,
+          city: city,
+          province_state: provinceState,
+          country: country,
+        },
     });
     res.redirect('/landlord-properties');
   } catch (e) {
