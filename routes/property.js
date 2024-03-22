@@ -1,9 +1,29 @@
 const express = require('express');
+// eslint-disable-next-line new-cap
 const router = express.Router();
 const {PrismaClient} = require('@prisma/client');
 const jwt = require('jsonwebtoken');
 const prisma = new PrismaClient();
 
+
+/**
+ * Verifies if the user is a landlord
+ * by checking the token in the request cookies.
+ * If the user is not a landlord or the token is invalid,
+ * it returns an appropriate response.
+ *
+ * @param {Object} req - The request object.
+ * @param {Object} res - The response object.
+ * @param {Function} next - The next middleware function.
+ * @return {res} Calls the next middleware function
+ * if the token is valid and the user is a landlord;
+ *         sends a redirection response
+ *         if the token is missing;
+ *         sends access denied response
+ *         if the token is invalid or the user is not a landlord;
+ *         sends an invalid token response
+ *         if there is an error verifying the token.
+ */
 function verifyLandlord(req, res, next) {
   const token = req.cookies.jwt;
   if (!token) {
