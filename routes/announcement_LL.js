@@ -109,7 +109,6 @@ async function submitAnnouncement(req, res) {
         property: propertyIdInt,
       },
     });
-
     if (!newAnnouncement) {
       return res.status(400).json({error: 'Failed to submit announcement'});
     }

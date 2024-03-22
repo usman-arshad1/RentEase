@@ -1,29 +1,27 @@
 <%- include("templates/header_LL") %>
 
 <div class="container">
+    <br>
     <h1>Tenant List</h1>
 
-    <% if (data.properties.length !== 0) { %>
-        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#invite-modal">Invite New Tenant</button>
-        <hr />
-    <% } %>
+
 
     <% if (messages.emailInvalid) { %>
-        <div class="alert alert-danger" role="alert" data-cy="email-invalid">
-            <%= messages.emailInvalid %>
-        </div>
+    <div class="alert alert-danger" role="alert" data-cy="email-invalid">
+        <%= messages.emailInvalid %>
+    </div>
     <% } %>
 
     <% if (messages.removeValid) { %>
-        <div class="alert alert-success" role="alert" data-cy="remove-valid">
-            <%= messages.removeValid %>
-        </div>
+    <div class="alert alert-success" role="alert" data-cy="remove-valid">
+        <%= messages.removeValid %>
+    </div>
     <% } %>
 
     <% if (messages.emailSentValid) { %>
-        <div class="alert alert-success" role="alert" data-cy="email-sent-valid">
-            <%= messages.emailSentValid %>
-        </div>
+    <div class="alert alert-success" role="alert" data-cy="email-sent-valid">
+        <%= messages.emailSentValid %>
+    </div>
     <% } %>
 
     <!-- <% if (data.tenants) { %>
@@ -58,35 +56,43 @@
     <% } %> -->
 
     <% if (data.tenants) { %>
-        <div class="p-5">
-            <table id = "tenant_table" class="table table-striped" data-cy="tenant-list-table" style="width:100%">
-                <thead>
-                    <tr>
-                        <th>Property</th>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <% data.tenants.forEach(tenant => { %>
-                        <tr data-cy="tenant-row">
-                            <td><%= `${tenant.unit} ${tenant.street}, ${tenant.city}, ${tenant.country}` %></td>
-                            <td><%= `${tenant.first_name} ${tenant.last_name}` %></td>
-                            <td><%= tenant.email %></td>
-                            <td>
-                                <form method="GET" action="<%= tenant.action %>" data-cy="remove-form">
-                                    <button type="submit" data-cy="remove-tenant" class="btn btn-danger btn-sm">Remove</button>
-                                </form>
-                            </td>
-                        </tr>
-                    <% }) %>
-                </tbody>
+    <div class="p-4">
+        <table id="tenant_table" class="table table-striped" data-cy="tenant-list-table" style="width:100%">
+            <thead>
+                <tr>
+                    <th>Property</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <% data.tenants.forEach(tenant => { %>
+                <tr data-cy="tenant-row">
+                    <td><%= `${tenant.unit} ${tenant.street}, ${tenant.city}, ${tenant.country}` %></td>
+                    <td><%= `${tenant.first_name} ${tenant.last_name}` %></td>
+                    <td><%= tenant.email %></td>
+                    <td>
+                        <form method="GET" action="<%= tenant.action %>" data-cy="remove-form">
+                            <button type="submit" data-cy="remove-tenant" class="btn btn-danger btn-sm">Remove</button>
+                        </form>
+                    </td>
+                </tr>
+                <% }) %>
+            </tbody>
+        </table>
+    </div>
+    
+    <% } %>
+
+    <% if (data.properties.length !== 0) { %>
+        <div class="text-center mt-4">
+            <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#invite-modal">Invite New Tenant</button>
         </div>
     <% } %>
 
-
 </div>
+
 
 <div class="modal fade" id="invite-modal" tabindex="-1">
     <div class="modal-dialog">
@@ -98,18 +104,23 @@
             <div class="modal-body">
                 <form id="invite-form" method="POST" action="/landlord-tenant-list">
                     <div class="form-floating mb-3">
-                        <input type="email" class="form-control" id="email-input" name="email" placeholder="Email" data-cy="email-input" required>
+                        <input type="email" class="form-control" id="email-input" name="email" placeholder="Email"
+                            data-cy="email-input" required>
                         <label for="email-input">Email</label>
                     </div>
                     <div class="mb-3">
                         <select class="form-select" name="property">
 
                             <% for (let i = 0; i < data.properties.length; i++) { %>
-                                <% if (i === 0) { %>
-                                    <option value="<%= data.properties[i].property_id %>" selected><%= `${data.properties[i].unit} ${data.properties[i].street}, ${data.properties[i].city}, ${data.properties[i].country}` %></option>
-                                <% } else { %>
-                                    <option value="<%= data.properties[i].property_id %>"><%= `${data.properties[i].unit} ${data.properties[i].street}, ${data.properties[i].city}, ${data.properties[i].country}` %></option>
-                                <% } %>
+                            <% if (i === 0) { %>
+                            <option value="<%= data.properties[i].property_id %>" selected>
+                                <%= `${data.properties[i].unit} ${data.properties[i].street}, ${data.properties[i].city}, ${data.properties[i].country}` %>
+                            </option>
+                            <% } else { %>
+                            <option value="<%= data.properties[i].property_id %>">
+                                <%= `${data.properties[i].unit} ${data.properties[i].street}, ${data.properties[i].city}, ${data.properties[i].country}` %>
+                            </option>
+                            <% } %>
                             <% } %>
 
                         </select>
