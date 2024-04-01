@@ -67,24 +67,37 @@ const canadaProvinces = [
   '<option value="NU">Nunavut</option>',
   '<option value="YT">Yukon</option>',
 ];
-let countrySelect = document.getElementById('country');
-let provinceStateSelect = document.getElementById('provinceState');
+const countrySelect = document.getElementById('country');
+const provinceStateSelect = document.getElementById('provinceState');
 
 updateProvinceStateOptions();
 
 countrySelect.addEventListener('change', updateProvinceStateOptions);
 
+/**
+ * Updates the options of the province/state
+ * select element based on the selected country.
+ *
+ * @return {void}
+ */
 function updateProvinceStateOptions() {
-  var selectedCountry = countrySelect.value;
+  const selectedCountry = countrySelect.value;
   provinceStateSelect.innerHTML = '';
 
   if (selectedCountry === 'USA') {
-    provinceStateSelect.innerHTML = usaStates.join("");
+    provinceStateSelect.innerHTML = usaStates.join('');
   } else if (selectedCountry === 'Canada') {
-    provinceStateSelect.innerHTML = canadaProvinces.join("");
+    provinceStateSelect.innerHTML = canadaProvinces.join('');
   }
 }
 
+/**
+ * Sets custom validity messages for input fields with id 'city' or 'street'
+ *
+ * @param {HTMLInputElement} input - The input element to validate
+ *
+ * @return {void}
+ */
 function invalidInput(input) {
   if (input.id === 'city' || input.id ==='street') {
     if (input.value.trim() ==='') {
@@ -98,10 +111,14 @@ function invalidInput(input) {
     }
   }
 }
+
+
+// eslint-disable-next-line no-unused-vars,require-jsdoc
 function validateInput(input) {
   invalidInput(input);
 }
 
+// eslint-disable-next-line no-unused-vars,require-jsdoc
 function disableSubmitButton() {
   document.getElementById('submit').disabled = true;
   document.getElementById('submit').value = 'Submitting...';
