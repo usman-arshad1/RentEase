@@ -53,6 +53,9 @@
                 <div class="form-floating mb-2">
                     <textarea type="text" name="update" style="height: 140px" class="form-control"><%= results.update %></textarea>
                     <label for="update">Add an update.</label>
+                    <% if (errorMsgs.updateInvalid) { %>
+                        <p class="text-danger" data-cy="update-invalid"><%= errorMsgs.updateInvalid %></p>
+                    <% } %>
                 </div>
 
                 <!-- TO ADD FUNCTIONALITY FOR VIEWING IMAGES -->

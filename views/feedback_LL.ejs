@@ -1,35 +1,40 @@
 <%- include("templates/header_LL") %>
-<div class="p-5">
-    <table id="feedback_table" class="table table-striped" style="width:100%">
-        <thead>
-            <tr>
-                <th>Property</th>
-                <th>Name</th>
-                <th>Title</th>
-                <th>Category</th>
-                <th>Date</th>
-                <th>Status</th>
-            </tr>
-        </thead>
-        <tbody>
-            <% let i=0 %>
-            <% for (i = 0; i < results.length; i++) { %>
-                <%- include('templates/LL_feedback_row', {results: results[i], username: username})  %> 
-            <% } %>
+<div class="container">
+    <br>
+    <h1>Feedback</h1>
+    <div class="p-4">
+        <table id="feedback_table" class="table table-striped" style="width:100%">
+            <thead>
+                <tr>
+                    <th>Property</th>
+                    <th>Name</th>
+                    <th>Title</th>
+                    <th>Category</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <% let i=0 %>
+                <% for (i = 0; i < results.length; i++) { %>
+                    <%- include('templates/LL_feedback_row', {results: results[i], username: username})  %> 
+                <% } %>
 
-        </tbody>
-        <tfoot>
-            <tr>
-                <th>Property</th>
-                <th>Name</th>
-                <th>Title</th>
-                <th>Category</th>
-                <th>Date</th>
-                <th>Status</th>
-            </tr>
-        </tfoot>
-    </table>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th>Property</th>
+                    <th>Name</th>
+                    <th>Title</th>
+                    <th>Category</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
 </div>
 
 
-<%- include("templates/footer") %>
+<%- include("templates/footer_feedback_LL") %>

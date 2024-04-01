@@ -16,6 +16,26 @@ function getDate() {
   // console.log(curr_date); // "29-02-2024"
 }
 
+async function validateInput(title, description) {
+  const resData = {};
+
+  if (!title) {
+    resData['titleInvalid'] = 'Enter a title';
+    return resData;
+  } else if (title.length < 5) {
+    resData['titleInvalid'] = 'Enter a title with a minimum of 5 characters';
+    return resData;
+  }
+
+  if (!description) {
+    resData['descriptionInvalid'] = 'Enter a description';
+  } else if (description.length < 9) {
+    resData['descriptionInvalid'] = 'Enter a description with a minimum of 10 characters';
+  } 
+
+  return resData;
+}
+
 async function newFeedback(req, res) {
   const existingToken = req.cookies.jwt;
   const {title, category, description} = req.body;
@@ -85,11 +105,20 @@ async function newFeedback(req, res) {
 }
 
 router.post('/', async function(req, res, next) {
+  const {title, description} = req.body;
+  const resData = await validateInput(title, description);
+
+  if (Object.keys(resData).length > 0) {
+    req.flash('errors', resData);
+    return res.redirect('/new-feedback');
+  }
   await newFeedback(req, res);
 });
 
 router.get('/', function(req, res, next) {
-  res.render('new_feedback', {title: 'Tenant New Feedback'});
+  const errorMsgs = req.flash('errors')[0] || {};
+
+  res.render('new_feedback', {title: 'Tenant New Feedback', errorMsgs});
 });
 
 module.exports = router;

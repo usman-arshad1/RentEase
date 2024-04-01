@@ -4,7 +4,7 @@ const {PrismaClient} = require('@prisma/client');
 const prisma = new PrismaClient();
 const jwt = require('jsonwebtoken');
 
-async function viewFeedback(req, res) {
+async function viewFeedback(req, res) { 
   const existingToken = req.cookies.jwt;
 
   if (!existingToken) {

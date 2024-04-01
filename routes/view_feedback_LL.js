@@ -15,6 +15,20 @@ function getDate() {
   // console.log(curr_date); // "29-02-2024"
 }
 
+async function validateInput(update) {
+  const resData = {};
+
+  if (!update) {
+    resData['updateInvalid'] = 'Enter an update';
+    return resData;
+  } else if (update.length < 9) {
+    resData['updateInvalid'] = 'Enter an update with a minimum of 10 characters';
+    return resData;
+  }
+
+  return resData;
+}
+
 async function viewFeedback(req, res) {
   const existingToken = req.cookies.jwt;
 
@@ -77,10 +91,12 @@ async function viewFeedback(req, res) {
         feedback.category = 'Other';
         break;
     }
+  const errorMsgs = req.flash('errors')[0] || {};
 
     res.render('view_feedback_LL', {
       title: 'Landlord Feedback Details',
       results: feedback,
+      errorMsgs
     });
   } catch (err) {
     console.log(err);
@@ -131,6 +147,14 @@ async function addUpdate(req, res) {
 }
 
 router.post('/:feedback', async function(req, res, next) {
+  const {update} = req.body;
+  const resData = await validateInput(update);
+  const feedback_id = req.params.feedback;
+
+  if (Object.keys(resData).length > 0) {
+    req.flash('errors', resData);
+    return res.redirect('/landlord-view-feedback/'+ feedback_id);
+  }
   await addUpdate(req, res);
 });
 

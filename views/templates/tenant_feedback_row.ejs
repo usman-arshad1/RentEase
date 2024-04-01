@@ -6,6 +6,8 @@
     <td><%= results.category %></td>
     <td><%= results.date %></td>
     <td><%= results.status %></td>
-    <td><a href="<%= '/tenant-view-feedback/' + results.feedback_id %>">View</a></td>
+    <td>
+        <button onclick="window.location.href='<%= '/tenant-view-feedback/' + results.feedback_id %>'" class="btn btn-success">View</button>
+    </td>
         
 </tr>
