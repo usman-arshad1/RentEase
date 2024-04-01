@@ -29,7 +29,7 @@ async function validateInput(title, description) {
 
   if (!description) {
     resData['descriptionInvalid'] = 'Enter a description';
-  } else if (description.length < 6) {
+  } else if (description.length < 9) {
     resData['descriptionInvalid'] = 'Enter a description with a minimum of 10 characters';
   } 
 
