@@ -10,20 +10,20 @@ describe('signup page', () => {
   });
 
   it('landlord signup success', () => {
-    cy.get('[data-cy="fname-input"]').type('Elias', {delay: 100});
-    cy.get('[data-cy="lname-input"]').type('Lindholm', {delay: 100});
-    cy.get('[data-cy="email-input"]').type('elias@lindholm.com', {delay: 100});
-    cy.get('[data-cy="password-input"]').type('canucks123', {delay: 100});
+    cy.get('[data-cy="fname-input"]').type('Lebron', {delay: 100});
+    cy.get('[data-cy="lname-input"]').type('James', {delay: 100});
+    cy.get('[data-cy="email-input"]').type('lebron@james.com', {delay: 100});
+    cy.get('[data-cy="password-input"]').type('lakernation123', {delay: 100});
     cy.get('[data-cy="signup-form"]').submit();
     cy.url().should('include', '/login?message=success');
   });
 
   it('tenant signup success', () => {
     cy.get('[data-cy="landlord-radio"]').invoke('removeAttr', 'checked');
-    cy.get('[data-cy="fname-input"]').type('Jason', {delay: 100});
-    cy.get('[data-cy="lname-input"]').type('Robertson', {delay: 100});
-    cy.get('[data-cy="email-input"]').type('jason@robertson.com', {delay: 100});
-    cy.get('[data-cy="password-input"]').type('stars123', {delay: 100});
+    cy.get('[data-cy="fname-input"]').type('anthony', {delay: 100});
+    cy.get('[data-cy="lname-input"]').type('davis', {delay: 100});
+    cy.get('[data-cy="email-input"]').type('anthony@davis.com', {delay: 100});
+    cy.get('[data-cy="password-input"]').type('lakernation123', {delay: 100});
     cy.get('[data-cy="tenant-radio"]').check();
     cy.get('[data-cy="signup-form"]').submit();
     cy.url().should('include', '/login?message=success');

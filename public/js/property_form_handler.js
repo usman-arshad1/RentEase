@@ -92,7 +92,7 @@ function invalidInput(input) {
     } else if (input.validity.patternMismatch) {
       input.setCustomValidity('No special characters allowed');
     } else if (input.value.length > 50) {
-      input.setCustomValidity('Input must be less than 100 characters');
+      input.setCustomValidity('Input must be less than 50 characters');
     } else {
       input.setCustomValidity('');
     }
