@@ -88,7 +88,7 @@ async function viewFeedback(req, res) {
         feedback.category = 'Applicance';
         break;
       case 5:
-        feedback.category = 'Other';
+        feedback.category = 'Other'; 
         break;
     }
   const errorMsgs = req.flash('errors')[0] || {};
