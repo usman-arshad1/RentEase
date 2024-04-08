@@ -4,6 +4,7 @@ const {PrismaClient} = require('@prisma/client');
 const prisma = new PrismaClient();
 const jwt = require('jsonwebtoken');
 const {forEach} = require('async');
+const code = require("../public/js/code_gen");
 
 function getDate() {
   const date = new Date();
@@ -78,6 +79,7 @@ async function newFeedback(req, res) {
 
     const curr_date = getDate();
     // console.log(curr_date); // "29-02-2024"
+    const unique_code = code.unique_code;
 
     await prisma.feedback.create({
       data: {
@@ -88,6 +90,7 @@ async function newFeedback(req, res) {
         status: 1,
         property_fk: user.property_fk,
         user_id_fk: user.user_id,
+        code: unique_code,
       },
     });
     return res.redirect('/tenant-feedback');

@@ -48,10 +48,10 @@ async function viewFeedback(req, res) {
     if (decoded.role == 2) {
       return res.redirect('/tenant-feedback');
     }
-
+    console.log("code: " +req.params.feedback);
     const feedback = await prisma.feedback.findUnique({
       where: {
-        feedback_id: parseInt(req.params.feedback),
+        code: req.params.feedback,
       },
     });
 
@@ -71,8 +71,7 @@ async function viewFeedback(req, res) {
       },
     });
 
-    feedback.property_fk =
-			property.unit + ' ' + property.street + ', ' + property.city;
+    feedback.property_fk = property.unit + ' ' + property.street + ', ' + property.city;
 
     switch (feedback.category) {
       case 1:
@@ -117,14 +116,14 @@ async function addUpdate(req, res) {
 
   const curr_date = getDate();
 
-  const feedback_id = parseInt(req.params.feedback);
+  const code = req.params.feedback;
   const status = parseInt(req.body.status);
   const update = curr_date + ': ' + req.body.update;
 
   try {
     const addUpdate = await prisma.feedback.update({
       where: {
-        feedback_id: feedback_id,
+        code: code,
       },
       data: {
         status: status,
@@ -149,11 +148,11 @@ async function addUpdate(req, res) {
 router.post('/:feedback', async function(req, res, next) {
   const {update} = req.body;
   const resData = await validateInput(update);
-  const feedback_id = req.params.feedback;
+  const code = req.params.feedback;
 
   if (Object.keys(resData).length > 0) {
     req.flash('errors', resData);
-    return res.redirect('/landlord-view-feedback/'+ feedback_id);
+    return res.redirect('/landlord-view-feedback/'+ code);
   }
   await addUpdate(req, res);
 });

@@ -24,10 +24,10 @@ async function viewFeedback(req, res) {
       return res.redirect('/landlord-feedback');
     }
 
-    // POSSIBLE SECURITY RISK USING REQ.PARAMS
+    // POSSIBLE SECURITY RISK USING REQ.PARAMS (SOLVED USING UNIQUE CODE)
     const feedback = await prisma.feedback.findUnique({
       where: {
-        feedback_id: parseInt(req.params.feedback),
+        code: req.params.feedback,
       },
     });
 
@@ -39,9 +39,7 @@ async function viewFeedback(req, res) {
       },
     });
 
-    feedback.property_fk = property.unit + ' ' +
-                           property.street + ', ' +
-                           property.city;
+    feedback.property_fk = property.unit + ' ' + property.street + ', ' + property.city;
 
     switch (feedback.category) {
       case 1:

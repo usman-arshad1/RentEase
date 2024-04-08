@@ -17,7 +17,8 @@ model feedback {
   status                         Int        @default(1)
   property_fk                    Int
   user_id_fk                     Int
-  user                           user       @relation(fields: [user_id_fk], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "feedback_user_fk")
+  code                           String     @unique(map: "code_UNIQUE") @db.VarChar(10)
+  user                           user       @relation(fields: [user_id_fk], references: [user_id], onDelete: NoAction, onUpdate: Restrict, map: "feedback_user_fk")
   properties                     properties @relation(fields: [property_fk], references: [property_id], onDelete: NoAction, onUpdate: NoAction, map: "property_fk")
   status_feedback_statusTostatus status     @relation("feedback_statusTostatus", fields: [status], references: [status_id], onDelete: NoAction, onUpdate: NoAction, map: "status_fk")
 
