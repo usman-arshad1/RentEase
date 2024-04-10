@@ -68,28 +68,29 @@ const canadaProvinces = [
   '<option value="YT">Yukon</option>',
 ];
 const countrySelect = document.getElementById('country');
-const provinceStateSelect = document.getElementById('provinceState');
-
-updateProvinceStateOptions();
+// const provinceStateSelect = document.getElementById('provinceState');
+//
+// updateProvinceStateOptions();
 
 countrySelect.addEventListener('change', updateProvinceStateOptions);
 
-/**
- * Updates the options of the province/state
- * select element based on the selected country.
- *
- * @return {void}
- */
-function updateProvinceStateOptions() {
-  const selectedCountry = countrySelect.value;
-  provinceStateSelect.innerHTML = '';
+// /**
+//  * Updates the options of the province/state
+//  * select element based on the selected country.
+//  *
+//  * @return {void}
+//  */
+// function updateProvinceStateOptions() {
+//   const selectedCountry = countrySelect.value;
+//   provinceStateSelect.innerHTML = '';
+//
+//   if (selectedCountry === 'USA') {
+//     provinceStateSelect.innerHTML = usaStates.join('');
+//   } else if (selectedCountry === 'Canada') {
+//     provinceStateSelect.innerHTML = canadaProvinces.join('');
+//   }
+// }
 
-  if (selectedCountry === 'USA') {
-    provinceStateSelect.innerHTML = usaStates.join('');
-  } else if (selectedCountry === 'Canada') {
-    provinceStateSelect.innerHTML = canadaProvinces.join('');
-  }
-}
 
 /**
  * Sets custom validity messages for input fields with id 'city' or 'street'
@@ -122,4 +123,77 @@ function validateInput(input) {
 function disableSubmitButton() {
   document.getElementById('submit').disabled = true;
   document.getElementById('submit').value = 'Submitting...';
+}
+
+// For 'Add Property' form
+const countrySelectAdd = document.getElementById('country');
+if (countrySelectAdd) {
+  const provinceStateSelectAdd = document.getElementById('provinceState');
+  countrySelectAdd.addEventListener('change', () =>
+    updateProvinceStateOptions(countrySelectAdd, provinceStateSelectAdd),
+  );
+
+  // Call it once initially to populate options based on initial country value
+  updateProvinceStateOptions(countrySelectAdd, provinceStateSelectAdd);
+}
+
+// Event listener for 'Update Property' modal
+document.addEventListener('DOMContentLoaded', function() {
+  // Handles country change for both Add and Update modals
+  // eslint-disable-next-line max-len
+  document.querySelectorAll('select[name="country"]').forEach((countrySelect) => {
+    countrySelect.addEventListener('change', function() {
+      // eslint-disable-next-line max-len
+      const provinceStateSelect = this.closest('form').querySelector('select[name="provinceState"]');
+      updateProvinceStateOptions(this, provinceStateSelect);
+    });
+  });
+
+  // eslint-disable-next-line max-len
+  // Initializes province/state options based on the default country selection for the Update modal
+  // This function needs to be called when the Update modal is shown
+  $('#updatePropertyModal').on('show.bs.modal', function(event) {
+    const button = $(event.relatedTarget); // Button that triggered the modal
+    const property = button.data('property'); // Extract property data
+    populateForm(property); // Populate form with property data
+
+    const countrySelectUpdate = this.querySelector('select[name="country"]');
+    const provinceStateSelectUpdate = this
+        .querySelector('select[name="provinceState"]');
+    updateProvinceStateOptions(countrySelectUpdate, provinceStateSelectUpdate);
+  });
+});
+// eslint-disable-next-line max-len,require-jsdoc
+function updateProvinceStateOptions(countrySelect, provinceStateSelect, provinceStateValue = null) {
+  const selectedCountry = countrySelect.value;
+  provinceStateSelect.innerHTML = '';
+
+  const options = selectedCountry === 'USA' ? usaStates : canadaProvinces;
+  provinceStateSelect.innerHTML = options.join('');
+
+  if (provinceStateValue) {
+    provinceStateSelect.value = provinceStateValue;
+  }
+}
+
+// eslint-disable-next-line require-jsdoc,no-unused-vars
+function populateForm(propertyJson) {
+  const property = JSON.parse(propertyJson);
+  const modal = document.getElementById('updatePropertyModal');
+
+  modal.querySelector('input[name="unit"]').value = property.unit;
+  modal.querySelector('input[name="street"]').value = property.street;
+  modal.querySelector('input[name="city"]').value = property.city;
+
+  const countrySelect = modal.querySelector('select[name="country"]');
+  countrySelect.value = property.country;
+
+  const provinceStateSelect = modal
+      .querySelector('select[name="provinceState"]');
+  // eslint-disable-next-line max-len
+  modal.querySelector('form').action = '/landlord-properties/update/' + property.property_id;
+
+  updateProvinceStateOptions(countrySelect,
+      provinceStateSelect,
+      property.province_state);
 }
