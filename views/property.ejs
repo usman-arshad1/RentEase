@@ -2,10 +2,6 @@
 <div class="container">
     <br>
     <h1>Properties</h1>
-    <!-- <div class="spacer">
-        List of properties for rent goes here
-    </div> -->
-
     <div class="p-4">
         <table id="property_table" class="table table-striped" style="width:100%">
             <thead>
@@ -28,8 +24,8 @@
                     <td><%= property.province_state %></td>
                     <td><%= property.country %></td>
                     <td>
-                        <a href="/landlord-properties/update/<%=property.property_id%>">
-                            <button class="btn btn-success">
+                        <a href="#updatePropertyModal" data-toggle="modal" data-property="<%= JSON.stringify(property) %>">
+                            <button class="btn btn-success" onclick="populateForm('<%= JSON.stringify(property) %>')">
                                 Update
                             </button>
                         </a>
@@ -52,14 +48,128 @@
     </div>
 
     <div class="text-center mt-4">
-        <a href="/add_property" id="add-property">
-            <button class="btn btn-success">Add Property</button>
-        </a>
+        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#addPropertyModal">
+            Add Property
+        </button>
     </div>
     <!-- <a href="/add_property" id="add-property">
         <button class="btn btn-success">Add Property</button>
     </a> -->
+    <!-- Add property Modal -->
+    <div id="addPropertyModal" class="modal fade">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add Property</h5>
+                </div>
+                <div class="modal-body">
+                    <form id="addPropertyForm"
+                          action="/add_property"
+                          class="form-control"
+                          method="POST"
+                          onsubmit="disableSubmitButton()">
+                        <label for="unit">Unit</label>
+                        <input class="form-control" type="number" id="unit" name="unit" placeholder="Unit number" min="1" pattern="\d+" required>
+
+                        <label for="street">Street</label>
+                        <input type="text"
+                               id="street"
+                               name="street"
+                               class="form-control"
+                               placeholder="Street Address"
+                               pattern="[a-zA-Z0-9.'\-]*"
+                               maxlength="50"
+                               oninvalid="invalidInput(this)"
+                               oninput="validateInput(this)"
+                               required>
+                        <label for="city">City</label>
+                        <input type="text"
+                               id="city"
+                               name="city"
+                               class="form-control"
+                               placeholder="City"
+                               pattern="[a-zA-Z0-9.'\-]*"
+                               maxlength="50"
+                               oninvalid="invalidInput(this)"
+                               oninput="validateInput(this)"
+                               required>
+
+                        <label for="provinceState">Province/State</label>
+                        <select class="form-control" id="provinceState" name="provinceState" required>
+                        </select>
+                        <label for="country">Country</label>
+                        <select class="form-control" name="country" id="country" required>
+                            <option value="Canada">Canada</option>
+                            <option value="USA">USA</option>
+                        </select>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success" form="addPropertyForm" id="submit">Submit</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Update Modal -->
+    <div id="updatePropertyModal" class="modal fade">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Update Property</h5>
+                </div>
+                <div class="modal-body">
+                    <form class="form-control" id="updatePropertyForm" method="POST">
+                        <input type="hidden" name="_method" value="PUT">
+                        <label for="unit">Unit</label>
+                        <input class="form-control" type="number" id="unit" name="unit" min="1" pattern="\d+" placeholder="Unit number" required>
+                        <label for="street">Street</label>
+                        <input type="text"
+                               id="street"
+                               name="street"
+                               class="form-control"
+                               placeholder="Street Address"
+                               pattern="[a-zA-Z0-9.'\-]*"
+                               maxlength="50"
+                               oninvalid="invalidInput(this)"
+                               oninput="validateInput(this)"
+                               required>
+
+                        <label for="city">City</label>
+                        <input type="text"
+                               id="city"
+                               name="city"
+                               placeholder="City"
+                               class="form-control"
+                               pattern="[a-zA-Z0-9.'\-]*"
+                               maxlength="50"
+                               oninvalid="invalidInput(this)"
+                               oninput="validateInput(this)"
+                               required>
+
+                        <label for="provinceState">Province/State</label>
+                        <select id="provinceState" class="form-control" name="provinceState" required>
+                        </select>
+                        <label for="country">Country</label>
+                        <select name="country" class="form-control" id="country" required>
+                            <option value="Canada">Canada</option>
+                            <option value="USA">USA</option>
+                        </select>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success" form="updatePropertyForm">Update</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 
+
+
 <%- include("templates/footer_property") %>
+
+<script src="/js/property_form_handler.js"></script>

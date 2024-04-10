@@ -116,6 +116,7 @@ router.get('/', async function(req, res, next) {
 
         const propertyResults = await prisma.properties.findMany({
           where: {
+            user_id: decoded.user_id,
             property_id: {
               notIn: tenants.map((tenant) => tenant.property_fk),
             },
