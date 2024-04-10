@@ -24,11 +24,10 @@
                     <td><%= property.province_state %></td>
                     <td><%= property.country %></td>
                     <td>
-                        <a href="#updatePropertyModal" data-toggle="modal" data-property="<%= JSON.stringify(property) %>">
-                            <button class="btn btn-success" onclick="populateForm('<%= JSON.stringify(property) %>')">
-                                Update
-                            </button>
-                        </a>
+                        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#updatePropertyModal" data-property='<%= JSON.stringify(property) %>' data-property-id="<%= property.property_id %>">
+                            Update
+                        </button>
+
                     <td>
                         <form action="/landlord-properties/<%=property.property_id%>"
                               method="POST"
@@ -95,17 +94,17 @@
                                required>
 
                         <label for="provinceState">Province/State</label>
-                        <select class="form-control" id="provinceState" name="provinceState" required>
+                        <select class="form-control province-state-selector" name="provinceState" required>
                         </select>
                         <label for="country">Country</label>
-                        <select class="form-control" name="country" id="country" required>
+                        <select class="form-control country-selector" name="country"  required>
                             <option value="Canada">Canada</option>
                             <option value="USA">USA</option>
                         </select>
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-success" form="addPropertyForm" id="submit">Submit</button>
+                    <button type="submit" class="btn btn-success" form="addPropertyForm">Submit</button>
                     <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
                 </div>
             </div>
@@ -120,7 +119,10 @@
                     <h5 class="modal-title">Update Property</h5>
                 </div>
                 <div class="modal-body">
-                    <form class="form-control" id="updatePropertyForm" method="POST">
+                    <form
+                            class="form-control"
+                            id="updatePropertyForm"
+                            method="POST">
                         <input type="hidden" name="_method" value="PUT">
                         <label for="unit">Unit</label>
                         <input class="form-control" type="number" id="unit" name="unit" min="1" pattern="\d+" placeholder="Unit number" required>
@@ -149,10 +151,10 @@
                                required>
 
                         <label for="provinceState">Province/State</label>
-                        <select id="provinceState" class="form-control" name="provinceState" required>
+                        <select class="form-control province-state-selector" name="provinceState" required>
                         </select>
                         <label for="country">Country</label>
-                        <select name="country" class="form-control" id="country" required>
+                        <select name="country" class="form-control country-selector" required>
                             <option value="Canada">Canada</option>
                             <option value="USA">USA</option>
                         </select>
@@ -160,7 +162,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-success" form="updatePropertyForm">Update</button>
-                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
