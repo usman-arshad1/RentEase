@@ -4,7 +4,6 @@ const {PrismaClient} = require('@prisma/client');
 const prisma = new PrismaClient();
 const jwt = require('jsonwebtoken');
 const {forEach} = require('async');
-const code = require("../public/js/code_gen");
 
 function getDate() {
   const date = new Date();
@@ -32,7 +31,7 @@ async function validateInput(title, description) {
     resData['descriptionInvalid'] = 'Enter a description';
   } else if (description.length < 9) {
     resData['descriptionInvalid'] = 'Enter a description with a minimum of 10 characters';
-  } 
+  }
 
   return resData;
 }
