@@ -136,28 +136,32 @@ function disableSubmitButton(form) {
 
 document.addEventListener('DOMContentLoaded', function() {
   const updateModal = document.getElementById('updatePropertyModal');
-  updateModal.addEventListener('show.bs.modal', function(event) {
-    const button = event.relatedTarget;
-    const property = JSON.parse(
-        button.getAttribute('data-property'));
-    const propertyId = button.getAttribute('data-property-id');
+  if (updateModal) {
+    updateModal.addEventListener('show.bs.modal', function(event) {
+      const button = event.relatedTarget;
+      const property = JSON.parse(button.getAttribute('data-property'));
+      const propertyId = button.getAttribute('data-property-id');
 
-    const form = updateModal.querySelector('form');
-    // eslint-disable-next-line max-len
-    form.setAttribute('action', '/landlord-properties/update/' + propertyId); // Set the form action dynamically
+      const form = updateModal.querySelector('form');
+      form
+          .setAttribute('action',
+              '/landlord-properties/update/' + propertyId);
+      // Populate the form fields
+      form.elements['unit'].value = property.unit;
+      form.elements['street'].value = property.street;
+      form.elements['city'].value = property.city;
+      form.elements['country'].value = property.country;
 
-    // Populate the form fields
-    form.elements['unit'].value = property.unit;
-    form.elements['street'].value = property.street;
-    form.elements['city'].value = property.city;
-    form.elements['country'].value = property.country;
-
-    // eslint-disable-next-line max-len
-    updateProvinceStateOptionsBasedOnCountry(form.elements['country'], form.querySelector('.province-state-selector'), function() {
-      form.elements['provinceState'].value = property.province_state;
+      updateProvinceStateOptionsBasedOnCountry(form.elements['country'],
+          form.querySelector('.province-state-selector'), function() {
+            form.elements['provinceState'].value = property.province_state;
+          });
     });
-  });
+  } else {
+    console.error('Modal element not found: #updatePropertyModal');
+  }
 });
+
 
 
 
