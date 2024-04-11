@@ -125,11 +125,11 @@
                             method="POST">
                         <input type="hidden" name="_method" value="PUT">
                         <label for="unit">Unit</label>
-                        <input class="form-control" type="number" id="unit" name="unit" min="1" pattern="\d+" placeholder="Unit number" required>
+                        <input class="form-control" type="number" id="unit" name="unitUpdate" min="1" pattern="\d+" placeholder="Unit number" required>
                         <label for="street">Street</label>
                         <input type="text"
                                id="street"
-                               name="street"
+                               name="streetUpdate"
                                class="form-control"
                                placeholder="Street Address"
                                pattern="[a-zA-Z0-9.'\- ]*"
@@ -141,7 +141,7 @@
                         <label for="city">City</label>
                         <input type="text"
                                id="city"
-                               name="city"
+                               name="cityUpdate"
                                placeholder="City"
                                class="form-control"
                                pattern="[a-zA-Z0-9.'\- ]*"
@@ -151,17 +151,17 @@
                                required>
 
                         <label for="provinceState">Province/State</label>
-                        <select class="form-control province-state-selector" name="provinceState" required>
+                        <select class="form-control province-state-selector" name="provinceStateUpdate" required>
                         </select>
                         <label for="country">Country</label>
-                        <select name="country" class="form-control country-selector" required>
+                        <select name="countryUpdate" class="form-control country-selector" required>
                             <option value="Canada">Canada</option>
                             <option value="USA">USA</option>
                         </select>
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-success" form="updatePropertyForm">Update</button>
+                    <button type="submit" class="btn btn-success" data-sbmt="update" form="updatePropertyForm">Update</button>
                     <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
                 </div>
             </div>
