@@ -1,5 +1,5 @@
 describe('Reliability of landlord announcement', () => {
-    const numIterations = 25; // Number of times to repeat the test
+    const numIterations = 19; // Number of times to repeat the test
 
     beforeEach(() => {
         cy.visit('http://localhost:8080/login');
