@@ -8,3 +8,4 @@ cypress/screenshots
 .idea/
 .idea/workspace.xml
 .idea
+/cypress
