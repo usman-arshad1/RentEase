@@ -12,8 +12,8 @@ const prisma = new PrismaClient();
  * @param {*} role
  * @returns
  */
-function generateJWT(userId, email, role) {
-  return jwt.sign({userId, email, role}, process.env.JWT_SECRET, {
+function generateJWT(user_id, email, role) {
+  return jwt.sign({user_id, email, role}, process.env.JWT_SECRET, {
     expiresIn: '1h',
   });
 }
