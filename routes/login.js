@@ -5,12 +5,24 @@ const jwt = require('jsonwebtoken');
 const {PrismaClient} = require('@prisma/client');
 const prisma = new PrismaClient();
 
+/**
+ * Generate JWT token
+ * @param {*} userId
+ * @param {*} email
+ * @param {*} role
+ * @returns
+ */
 function generateJWT(user_id, email, role) {
   return jwt.sign({user_id, email, role}, process.env.JWT_SECRET, {
     expiresIn: '1h',
   });
 }
 
+/**
+ * Register User
+ * @param {*} email
+ * @returns
+ */
 async function registeredUser(email) {
   const existingUser = await prisma.user.findUnique({
     where: {
@@ -51,7 +63,8 @@ async function validateInput(email, password) {
   if (!password) {
     resData['passwordInvalid'] = 'Enter a password';
   } else if (password.length < 8) {
-    resData['passwordInvalid'] = 'Enter a password with a minimum of 8 characters';
+    resData['passwordInvalid'] =
+    'Enter a password with a minimum of 8 characters';
   } else if (await bcrypt.compare(password, result.password) === false) {
     resData['passwordInvalid'] = 'Incorrect password';
   }

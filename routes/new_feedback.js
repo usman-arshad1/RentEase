@@ -78,8 +78,8 @@ async function newFeedback(req, res) {
 
     const curr_date = getDate();
     // console.log(curr_date); // "29-02-2024"
-    const unique_code = code.unique_code();
-    console.log("code: " + unique_code)
+    const code = unique_code();
+    console.log("code: " + code)
 
     await prisma.feedback.create({
       data: {
@@ -90,7 +90,7 @@ async function newFeedback(req, res) {
         status: 1,
         property_fk: user.property_fk,
         user_id_fk: user.user_id,
-        code: unique_code,
+        code: code,
       },
     });
     return res.redirect('/tenant-feedback');
