@@ -21,6 +21,6 @@ describe('Reliability of landlord announcement', () => {
             cy.get('[data-cy="announcement-create"]').click();
             cy.get('[data-cy="announcement-submitted"]').should('be.visible')
                 .contains('Announcement successfully submitted');
-            }
-        });
+        }
+    });
 });
