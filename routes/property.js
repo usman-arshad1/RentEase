@@ -129,6 +129,7 @@ router.post('/update/:id', verifyLandlord, async (req, res)=> {
     res.redirect('/landlord-properties');
   } catch (e) {
     res.status(500).send('Update failed');
+    console.log(e);
   }
 });
 
