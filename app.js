@@ -93,9 +93,9 @@ app.use(function(req, res, next) {
 // TODO Maybe change to make a call to get properties and/or
 // announcements before rendering the page
 
-app.listen(port, () => {
-  console.log(`Rent Ease web app listening at http://localhost:${port}`);
-});
+// app.listen(port, () => {
+//   console.log(`Rent Ease web app listening at http://localhost:${port}`);
+// });
 
 // error handler
 app.use(function(err, req, res, next) {
