@@ -1,0 +1,60 @@
+<%- include("templates/header_tenant") %>
+<div class="container-lg">
+    <div class="text-center">
+        <h2>Submit Feedback</h2>
+        <p class="lead">Do you have any building defects to report? <br> For example, structural, safety, or cosmetic issues.</p>
+    </div>
+    <div class="row justify-content-center my-5">
+        <div class="col-lg-6">
+            <form action="/submit-feedback" method="post">
+                
+                <div class="form-floating mb-4">
+                    <input type="text" class="form-control" id="title" placeholder="e.g. Broken door handle">
+                    <label for="title">Title:</label>
+                </div>
+                
+                <label for="category" class="form-label">What is your feedback about?</label>
+                <select name="" id="" class="form-select" id="category">
+                    <option value="structural" selected>Strutural Defect</option>
+                    <option value="safety">Safety Concern</option>
+                    <option value="cosmetic">Cosmetic Defect</option>
+                    <option value="applicance">Applicance Defect</option>
+                    <option value="other">Other</option>
+                </select>
+
+                <div class="form-floating mb-4 mt-4">
+                    <textarea id="description" style="height: 140px" class="form-control"></textarea>
+                    <label for="description">Description:</label>
+                </div>
+
+                <!-- NEED TO ADD FUNCTIONALITY FOR IMAGE UPLOADS -->
+                <div class="file-button">
+                    <label>
+                        <input class="file-input" type="file" name="image"/>
+                    </label>
+                </div>
+                <div>
+                    <button type="submit" class="btn btn-secondary mt-2 mb-2">Upload
+                        <span><i class="fas fa-image"></i></span>
+                    </button>
+                </div>
+
+                <div class="mb-4 text-center">
+                    <button type="submit" class="btn btn-secondary">Submit</button>
+                </div>
+
+                
+                
+
+            </form>
+        </div>
+
+    </div>
+
+
+
+</div>
+
+
+
+<%- include("templates/footer") %>

@@ -1,0 +1,82 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model feedback {
+  feedback_id                    Int        @id @default(autoincrement())
+  title                          String     @db.VarChar(200)
+  category                       Int
+  description                    String     @db.VarChar(1000)
+  update                         String?    @db.VarChar(1000)
+  date                           String     @db.VarChar(45)
+  status                         Int        @default(1)
+  property_fk                    Int
+  user_id_fk                     Int
+  code                           String     @unique(map: "code_UNIQUE") @db.VarChar(10)
+  user                           user       @relation(fields: [user_id_fk], references: [user_id], onDelete: NoAction, onUpdate: Restrict, map: "feedback_user_fk")
+  properties                     properties @relation(fields: [property_fk], references: [property_id], onDelete: NoAction, onUpdate: NoAction, map: "property_fk")
+  status_feedback_statusTostatus status     @relation("feedback_statusTostatus", fields: [status], references: [status_id], onDelete: NoAction, onUpdate: NoAction, map: "status_fk")
+
+  @@index([user_id_fk], map: "feedback_user_fk_idx")
+  @@index([property_fk], map: "property_fk_idx")
+  @@index([status], map: "status_fk_idx")
+}
+
+model properties {
+  property_id                       Int             @id @default(autoincrement())
+  unit                              Int
+  street                            String          @db.VarChar(150)
+  city                              String          @db.VarChar(150)
+  province_state                    String          @map("province/state") @db.VarChar(45)
+  country                           String          @db.VarChar(20)
+  user_id                           Int
+  announcements                     announcements[]
+  feedback                          feedback[]
+  user_properties_user_idTouser     user            @relation("properties_user_idTouser", fields: [user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "user_id_fk")
+  user_user_property_fkToproperties user[]          @relation("user_property_fkToproperties")
+
+  @@index([user_id], map: "user_id_fk_idx")
+}
+
+model role {
+  role_id              Int    @id @default(autoincrement())
+  type                 String @db.VarChar(45)
+  user_user_roleTorole user[] @relation("user_roleTorole")
+}
+
+model status {
+  status_id                        Int        @id @default(autoincrement())
+  status_type                      String     @db.VarChar(45)
+  feedback_feedback_statusTostatus feedback[] @relation("feedback_statusTostatus")
+}
+
+model user {
+  user_id                                 Int          @id @default(autoincrement())
+  first_name                              String       @db.VarChar(150)
+  last_name                               String       @db.VarChar(150)
+  password                                String       @db.VarChar(200)
+  email                                   String       @unique(map: "email") @db.VarChar(150)
+  property_fk                             Int?
+  role                                    Int
+  feedback                                feedback[]
+  properties_properties_user_idTouser     properties[] @relation("properties_user_idTouser")
+  properties_user_property_fkToproperties properties?  @relation("user_property_fkToproperties", fields: [property_fk], references: [property_id], onDelete: NoAction, onUpdate: NoAction, map: "property")
+  role_user_roleTorole                    role         @relation("user_roleTorole", fields: [role], references: [role_id], onDelete: NoAction, onUpdate: NoAction, map: "role_fk")
+
+  @@index([property_fk], map: "property_idx")
+  @@index([role], map: "role_fk_idx")
+}
+
+model announcements {
+  announcement_id Int        @id @default(autoincrement())
+  announcement    String     @db.VarChar(1000)
+  property        Int
+  properties      properties @relation(fields: [property], references: [property_id], onDelete: NoAction, onUpdate: NoAction, map: "announcementProperty")
+
+  @@index([property], map: "announcementProperty_idx")
+}

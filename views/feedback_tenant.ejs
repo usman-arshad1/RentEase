@@ -1,0 +1,41 @@
+<%- include("templates/header_feedback_tenant") %>
+<div class="container">
+    <br>
+    <h1>Feedback</h1>
+    <div class="p-5">
+        <table id="feedback_table" class="table table-striped" style="width:100%">
+            <thead>
+                <tr>
+                    <th>Property</th>
+                    <th>Name</th>
+                    <th>Title</th>
+                    <th>Category</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <% let i=0 %>
+                <% for (i = 0; i < results.length; i++) { %>
+                    <%- include('templates/tenant_feedback_row', {results: results[i], username: username})  %> 
+                <% } %>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th>Property</th>
+                    <th>Name</th>
+                    <th>Title</th>
+                    <th>Category</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+    <div class="text-center mt-4">
+        <button onclick="window.location.href='/new-feedback'" class="btn btn-success">Add New Feedback</button>
+    </div>
+</div>
+
+<%- include("templates/footer_feedback_tenant") %>

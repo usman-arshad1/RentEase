@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('./templates/head_unregistered', { title: 'Signup - RentEase' }); %>
+</head>
+<body>
+    <div class="vh-100 d-flex justify-content-center align-items-center flex-column">
+        <h1 class="mb-3">RentEase Signup</h1>
+        <div class="form-wrapper w-100 mx-auto">
+            <form id="signup-form" class="bg-body-tertiary border p-5 rounded-3 mb-3" data-cy="signup-form" method="POST" action="/signup">
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" id="fname-input" name="fname" data-cy="fname-input" placeholder="First Name" maxlength="150" required>
+                    <label for="fname-input">First Name</label>
+    
+                    <% if (errorMsgs.fnameInvalid) { %>
+                        <p class="text-danger" data-cy="fname-invalid"><%= errorMsgs.fnameInvalid %></p>
+                    <% } %>
+    
+                </div>
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" id="lname-input" name="lname" data-cy="lname-input" placeholder="Last Name" maxlength="150" required>
+                    <label for="lname-input">Last Name</label>
+    
+                    <% if (errorMsgs.lnameInvalid) { %>
+                        <p class="text-danger" data-cy="lname-invalid"><%= errorMsgs.lnameInvalid %></p>
+                    <% } %>
+    
+                </div>
+                <div class="form-floating mb-3">
+                    <input type="email" class="form-control" id="email-input" name="email" data-cy="email-input" placeholder="Email" maxlength="150" required>
+                    <label for="email-input">Email</label>
+    
+                    <% if (errorMsgs.emailInvalid) { %>
+                        <p class="text-danger" data-cy="email-invalid"><%= errorMsgs.emailInvalid %></p>
+                    <% } %>
+    
+                </div>
+                <div class="form-floating mb-3">
+                    <input type="password" class="form-control" id="password-input" name="password" data-cy="password-input" placeholder="Password" required>
+                    <label for="password-input">Password</label>
+    
+                    <% if (errorMsgs.passwordInvalid) { %>
+                        <p class="text-danger" data-cy="password-invalid"><%= errorMsgs.passwordInvalid %></p>
+                    <% } %>
+    
+                </div>
+                <div class="d-flex flex-column mb-3">
+                    <div class="d-flex justify-content-between">
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" id="landlord-radio" type="radio" name="role" value="landlord" data-cy="landlord-radio" checked>
+                            <label class="form-check-label" for="landlord-radio">Landlord</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" id="tenant-radio" type="radio" name="role" value="tenant" data-cy="tenant-radio">
+                            <label class="form-check-label" for="tenant-radio">Tenant</label>
+                        </div>
+                    </div>
+    
+                    <% if (errorMsgs.roleInvalid) { %>
+                        <p class="text-danger" data-cy="role-invalid"><%= errorMsgs.roleInvalid %></p>
+                    <% } %>
+                    
+                </div>
+                <button type="submit" class="btn btn-primary btn-lg w-100" id="signup-submit">Signup</button>
+            </form>
+        </div>
+        <p>Have an account? <a href="/login">Login here</a></p>
+    </div>
+</body>
+</html>
