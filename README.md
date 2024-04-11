@@ -1,3 +1,3 @@
 # RentEase
 
-https://rentease.azurewebsites.net/
+renteaseapp.azurewebsites.net
