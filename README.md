@@ -1,3 +1,3 @@
 # RentEase
 
-renteaseapp.azurewebsites.net
+(https://rentease-mo0n.onrender.com/login)
